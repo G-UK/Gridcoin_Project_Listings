@@ -5,7 +5,7 @@ Create the following folders for the stat XML download:
 /tmp/Projects/Credit
 /tmp/Projects/Compute
 
-Set the DownloadProjects Bash script to run once a day using a cron job at 22:00 UTC.
+Set the DownloadProjects Bash script to run once a day using a cron job.
 
 The SQL database should grab the relevant data from the downloaded XML's once per day at 23:00 UTC and update the project stats table.
 
