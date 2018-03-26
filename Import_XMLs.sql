@@ -15,31 +15,6 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
