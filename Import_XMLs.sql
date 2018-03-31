@@ -15,6 +15,37 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -41,9 +72,12 @@ SET credit = extractValue(creditxml, creditxpath);
 SET daycredit = credit - oldcredit;
 
 -- Grab compute data from XML file --
-SET computexpath =  	'/server_status/database_file_states/current_floating_point_speed';
-SET computexml = 		load_file(CONCAT('/tmp/Projects/Compute/', project));
-SET compute = 			extractValue(computexml, computexpath);
+SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
+SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+IF (extractValue(computexml, computexpath) IS NULL)
+	THEN SET compute = '0';
+	ELSE SET compute = extractValue(computexml, computexpath);
+END IF;
 
 -- Update total credit on Main Project Summary table --
 UPDATE grc_listings.`Projects_Main`
