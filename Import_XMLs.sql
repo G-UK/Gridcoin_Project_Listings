@@ -38,7 +38,7 @@ DECLARE dailycredit INT;
 DECLARE humantime DATE;
 
 -- Save current credit for project --
-SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = CurDate()));
+SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = CurDate()-1));
 
 -- Grab time data from XML file --
 SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
