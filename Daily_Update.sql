@@ -13,7 +13,7 @@
 
 -- Dumping structure for event grc_listings.Daily_Update
 DELIMITER //
-CREATE DEFINER=`g`@`192.168.0.3` EVENT `Daily_Update` ON SCHEDULE EVERY 1 DAY STARTS '2018-03-25 23:00:00' ON COMPLETION PRESERVE ENABLE COMMENT 'Not sure this scheduled update is working' DO BEGIN
+CREATE DEFINER=`g`@`192.168.0.3` EVENT `Daily_Update` ON SCHEDULE EVERY 1 DAY STARTS '2018-03-25 00:00:00' ENDS '2030-12-30 00:00:00' ON COMPLETION PRESERVE ENABLE COMMENT 'Not sure this scheduled update is working' DO BEGIN
 CALL UpdateAll();
 END//
 DELIMITER ;
