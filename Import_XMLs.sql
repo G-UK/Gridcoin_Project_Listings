@@ -64,7 +64,10 @@ SET humantime = (SELECT FROM_UNIXTIME(unixtime));
 -- Special Import Projects --
 -- Amicable --
 IF project = 'amicable' THEN
-	SET credit = extractValue(creditxml, creditxpath)*500;
+	IF (extractValue(computexml, computexpath) IS NULL)
+		THEN SET compute = '0';
+		ELSE SET compute = extractValue(computexml, computexpath)*500;
+	END IF;
 END IF;
 
 -- Collatz --
@@ -97,12 +100,6 @@ IF project = 'wcg' THEN
 	SET creditxpath = '/GlobalStatistics/StatisticsTotals/Points';
 	SET credit = (extractValue(creditxml, creditxpath)/7);
 
-	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath);
-	END IF;
 END IF;
 -- End Special Import Projects --
 
