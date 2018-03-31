@@ -15,69 +15,100 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
 -- Project files need downloading to /tmp/Project/Credit and /tmp/Project/Compute, this can be done using a bash script running as a daily cron job --
 
-DECLARE creditxml text;
-DECLARE computexml text;
-DECLARE creditxpath text;
-DECLARE computexpath text;
 DECLARE oldcredit BIGINT;
+
+DECLARE creditxml TEXT;
+DECLARE computexml TEXT;
+DECLARE unixtimexml TEXT;
+
+DECLARE creditxpath TEXT;
+DECLARE computexpath TEXT;
+DECLARE unixtimexpath TEXT;
+
 DECLARE credit BIGINT;
 DECLARE compute INT;
-DECLARE daycredit INT;
+DECLARE unixtime INT;
+
+DECLARE dailycredit INT;
+DECLARE humantime DATE;
 
 -- Save current credit for project --
-SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (Date = CurDate()-1));
+SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = CurDate()));
+
+-- Grab time data from XML file --
+SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
+SET unixtimexpath = '/tables/update_time';
+SET unixtime = extractValue(unixtimexml, unixtimexpath);
 
 -- Grab credit data from XML file --
-SET creditxpath = '/tables/total_credit';
 SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
+SET creditxpath = '/tables/total_credit';
 SET credit = extractValue(creditxml, creditxpath);
 
--- Calculate credit since last day. aka Daily Credit --
-SET daycredit = credit - oldcredit;
-
 -- Grab compute data from XML file --
-SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
 SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
 IF (extractValue(computexml, computexpath) IS NULL)
 	THEN SET compute = '0';
 	ELSE SET compute = extractValue(computexml, computexpath);
 END IF;
+
+-- Convert Unix timestamp to Human Readable --
+SET humantime = (SELECT FROM_UNIXTIME(unixtime));
+
+-- Special Import Projects --
+-- Amicable --
+IF project = 'amicable' THEN
+	SET credit = extractValue(creditxml, creditxpath)*500;
+END IF;
+
+-- Collatz --
+IF project = 'collatz' THEN
+	SET computexpath = '/server_status/database_file_states/current_integer_speed';
+	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	IF (extractValue(computexml, computexpath) IS NULL)
+		THEN SET compute = '0';
+		ELSE SET compute = extractValue(computexml, computexpath);
+	END IF;
+END IF;
+
+-- Einstein --
+IF project = 'einstein' THEN
+	SET computexpath = '/server_status/database_file_states/cpu_flops';
+	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	IF (extractValue(computexml, computexpath) IS NULL)
+		THEN SET compute = '0';
+		ELSE SET compute = extractValue(computexml, computexpath);
+	END IF;
+END IF;
+
+-- World Community Grid --
+IF project = 'wcg' THEN
+	SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
+	SET unixtimexpath = '/GlobalStatistics/LastUpdated';
+	SET humantime = extractValue(unixtimexml, unixtimexpath);
+	
+	SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
+	SET creditxpath = '/GlobalStatistics/StatisticsTotals/Points';
+	SET credit = (extractValue(creditxml, creditxpath)/7);
+
+	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
+	IF (extractValue(computexml, computexpath) IS NULL)
+		THEN SET compute = '0';
+		ELSE SET compute = extractValue(computexml, computexpath);
+	END IF;
+END IF;
+-- End Special Import Projects --
+
+
+-- Calculate credit since last day. aka Daily Credit --
+SET dailycredit = credit - oldcredit;
 
 -- Update total credit on Main Project Summary table --
 UPDATE grc_listings.`Projects_Main`
@@ -86,11 +117,10 @@ UPDATE grc_listings.`Projects_Main`
 	WHERE `Project ID`= project;
 
 -- Add new line for todays date in the Project Data table --
--- Need to figure out how to update the line if it already exists today rather than create a duplicate -- 
 REPLACE
 	INTO grc_listings.`Projects_Data`
-				(`Project ID`, `Date`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-	VALUES 	(project, CURDATE(), credit, compute, daycredit);
+				(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+	VALUES 	(project, humantime, unixtime, credit, compute, dailycredit);
 
 END//
 DELIMITER ;
