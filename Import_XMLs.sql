@@ -15,6 +15,63 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -36,6 +93,11 @@ DECLARE unixtime INT;
 
 DECLARE dailycredit INT;
 DECLARE humantime DATE;
+
+DECLARE althtml TEXT;
+DECLARE altstartpos INT;
+DECLARE altendpos INT;
+DECLARE altstring TEXT;
 
 -- Save current credit for project --
 SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 7 DAY)));
@@ -72,8 +134,8 @@ END IF;
 
 -- Collatz --
 IF project = 'collatz' THEN
-	SET computexpath = '/server_status/database_file_states/current_integer_speed';
 	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET computexpath = '/server_status/database_file_states/current_integer_speed';
 	IF (extractValue(computexml, computexpath) IS NULL)
 		THEN SET compute = '0';
 		ELSE SET compute = extractValue(computexml, computexpath);
@@ -82,12 +144,36 @@ END IF;
 
 -- Einstein --
 IF project = 'einstein' THEN
-	SET computexpath = '/server_status/database_file_states/cpu_flops';
 	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET computexpath = '/server_status/database_file_states/cpu_flops';
 	IF (extractValue(computexml, computexpath) IS NULL)
 		THEN SET compute = '0';
 		ELSE SET compute = extractValue(computexml, computexpath);
 	END IF;
+END IF;
+
+-- GPUGrid --
+IF project = 'gpugrid' THEN
+
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET altstartpos = (LOCATE('current GigaFLOPs', althtml)) + 26;
+	SET altendpos = LOCATE('</td>', althtml, altstartpos);
+	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
+	SET altstring = REPLACE(altstring, ',', '');
+	SET compute = CONVERT(altstring, SIGNED);
+
+END IF;
+
+-- Primegrid --
+IF project = 'primegrid' THEN
+
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET altstartpos = (LOCATE('Current TeraFLOPs', althtml)) + 26;
+	SET altendpos = LOCATE('</td>', althtml, altstartpos);
+	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
+	SET altstring = REPLACE(altstring, ',', '');
+	SET compute = (CONVERT(altstring, SIGNED))*1000;
+
 END IF;
 
 -- World Community Grid --
