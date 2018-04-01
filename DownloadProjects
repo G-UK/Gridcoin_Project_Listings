@@ -64,7 +64,7 @@ wget -t 5 -T 30 -a log -O nfs https://escatter11.fullerton.edu/nfs/server_status
 wget -t 5 -T 30 -a log -O numberfields https://numberfields.asu.edu/NumberFields/server_status.php?xml=1
 wget -t 5 -T 30 -a log -O odlk https://boinc.progger.info/odlk/server_status.php?xml=1
 wget -t 5 -T 30 -a log -O odlk1 https://boinc.multi-pool.info/latinsquares/server_status.php?xml=1
-wget -t 5 -T 30 -a log -O primegrid https://www.primegrid.com/server_status.php?xml=1
+wget -t 5 -T 30 -a log -O primegrid https://www.primegrid.com/server_status.php
 wget -t 5 -T 30 -a log -O rakesearch http://rake.boincfast.ru/rakesearch/server_status.php?xml=1
 wget -t 5 -T 30 -a log -O rnaworld https://www.rnaworld.de/rnaworld/server_status.php?xml=1
 wget -t 5 -T 30 -a log -O rosetta https://boinc.bakerlab.org/rosetta/server_status.php?xml=1
