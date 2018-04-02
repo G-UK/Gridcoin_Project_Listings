@@ -77,6 +77,11 @@ CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 
 
 
+
+
+
+
+
 )
     COMMENT 'This procedure calculates the project stats needed for calculating the listings and updates the Main Project Summary table'
 BEGIN
@@ -160,7 +165,7 @@ END IF;
 IF 
 	(was >= '0.1') AND
 	(zcd <= '7') AND
-	((compute >= '2000') OR (compute = '0')) AND
+	((compute >= '2500') OR (compute = '0')) AND
 	(vote != 'Out') AND
 	(currentstatus != 'Unlisted')
 	THEN SET expwhitelist = 'Whitelisted';
@@ -168,7 +173,7 @@ IF
 ELSEIF
 	((was < '0.1') OR
 	(zcd > '7') OR
-	((compute <= '2000') OR (compute = '0')) OR
+	((compute < '2500') OR (compute = '0')) OR
 	(vote != 'Out')) AND
 	(currentstatus != 'Unlisted')
 	THEN SET expwhitelist = 'Greylisted';
@@ -182,13 +187,13 @@ END IF;
 IF 
 	(was >= '0.1') AND
 	(zcd <= '7') AND
-	((compute >= '2000') OR (compute = '0'))
+	(compute >= '2500')
 	THEN SET recwhitelist = 'Whitelisted';
 	
 ELSEIF
 	(was < '0.1') OR
 	(zcd > '7') OR
-	((compute <= '2000') OR (compute = '0'))
+	(compute < '2500')
 	THEN SET recwhitelist = 'Greylisted';
 
 ELSE SET recwhitelist = 'Unlisted';
@@ -202,10 +207,12 @@ IF (project = 'seti') THEN
 	expwhitelist = 'Whitelisted (Override)',
 	recwhitelist = 'Whitelisted (Override)';
 END IF;
+
 -- WEP doesn't export stats in the files we collect and they are a small project that would be unlikely to support our load --
 IF (project = 'wep') THEN
 	SET whitelist = 'Unlisted (Override)';
 END IF;
+
 -- Leiden do not accept new user sign-ups so cannot be whitelisted regardless of work --
 IF (project = 'leiden') THEN
 	SET whitelist = 'Unlisted (Override)',

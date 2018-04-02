@@ -72,6 +72,22 @@ CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -100,7 +116,7 @@ DECLARE altendpos INT;
 DECLARE altstring TEXT;
 
 -- Save current credit for project --
-SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 7 DAY)));
+SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
 -- Grab time data from XML file --
 SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
@@ -124,7 +140,7 @@ END IF;
 SET humantime = (SELECT FROM_UNIXTIME(unixtime));
 
 -- Special Import Projects --
--- Amicable --
+-- Amicable Compute --
 IF project = 'amicable' THEN
 	IF (extractValue(computexml, computexpath) IS NULL)
 		THEN SET compute = '0';
@@ -132,7 +148,7 @@ IF project = 'amicable' THEN
 	END IF;
 END IF;
 
--- Collatz --
+-- Collatz Compute --
 IF project = 'collatz' THEN
 	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
 	SET computexpath = '/server_status/database_file_states/current_integer_speed';
@@ -142,7 +158,7 @@ IF project = 'collatz' THEN
 	END IF;
 END IF;
 
--- Einstein --
+-- Einstein Compute --
 IF project = 'einstein' THEN
 	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
 	SET computexpath = '/server_status/database_file_states/cpu_flops';
@@ -152,7 +168,7 @@ IF project = 'einstein' THEN
 	END IF;
 END IF;
 
--- GPUGrid --
+-- GPUGrid Compute --
 IF project = 'gpugrid' THEN
 
 	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
@@ -164,7 +180,19 @@ IF project = 'gpugrid' THEN
 
 END IF;
 
--- Primegrid --
+-- Mind Modelling --
+IF project = 'mindmodelling' THEN
+
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET altstartpos = (LOCATE('Current GigaFLOPS', althtml)) + 38;
+	SET altendpos = LOCATE('</td>', althtml, altstartpos);
+	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
+	SET altstring = REPLACE(altstring, ',', '');
+	SET compute = CONVERT(altstring, SIGNED);
+
+END IF;
+
+-- Primegrid Compute --
 IF project = 'primegrid' THEN
 
 	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
@@ -176,7 +204,20 @@ IF project = 'primegrid' THEN
 
 END IF;
 
--- World Community Grid --
+-- Sztaki Compute --
+IF project = 'sztaki' THEN
+
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET altstartpos = (LOCATE('last 48 hours:', althtml)) + 38;
+	SET altendpos = LOCATE(' GFlop/s', althtml, altstartpos);
+	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
+	SET altstring = REPLACE(altstring, ',', '');
+	SET compute = (CONVERT(altstring, SIGNED));
+
+END IF;
+
+-- World Community Grid Credit (Compute based on 1 Credit = 100GFLOP) --
+-- See https://www.worldcommunitygrid.org/help/viewTopic.do?shortName=points#505 --
 IF project = 'wcg' THEN
 	SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 	SET unixtimexpath = '/GlobalStatistics/LastUpdated';
@@ -185,8 +226,19 @@ IF project = 'wcg' THEN
 	SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 	SET creditxpath = '/GlobalStatistics/StatisticsTotals/Points';
 	SET credit = (extractValue(creditxml, creditxpath)/7);
+--	SET compute = ((credit - oldcredit)*100)/86400;
+	SET compute = (credit - oldcredit)/200;	
 
 END IF;
+
+-- Compute Speed Estimates where not provided (Based on 1 Credit = 432 GFlop) --
+-- See https://chat.gridcoin.io/channel/boinc_projects?msg=slack-C19UJ8NJH-1522701808-000269 --
+IF project = ('yoyo' OR 'ddm' OR 'leiden' OR 'primaboinca') THEN
+
+	SET compute = (credit - oldcredit)/200;
+
+END IF;
+
 -- End Special Import Projects --
 
 
