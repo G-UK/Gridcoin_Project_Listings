@@ -15,79 +15,6 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -108,7 +35,8 @@ DECLARE compute INT;
 DECLARE unixtime INT;
 
 DECLARE dailycredit INT;
-DECLARE humantime DATE;
+DECLARE humandate DATE;
+DECLARE humantime DATETIME;
 
 DECLARE althtml TEXT;
 DECLARE altstartpos INT;
@@ -116,7 +44,7 @@ DECLARE altendpos INT;
 DECLARE altstring TEXT;
 
 -- Save current credit for project --
-SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 2 DAY)));
 
 -- Grab time data from XML file --
 SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
@@ -137,6 +65,7 @@ IF (extractValue(computexml, computexpath) IS NULL)
 END IF;
 
 -- Convert Unix timestamp to Human Readable --
+SET humandate = (SELECT FROM_UNIXTIME(unixtime));
 SET humantime = (SELECT FROM_UNIXTIME(unixtime));
 
 -- Special Import Projects --
@@ -221,6 +150,7 @@ END IF;
 IF project = 'wcg' THEN
 	SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 	SET unixtimexpath = '/GlobalStatistics/LastUpdated';
+	SET humandate = extractValue(unixtimexml, unixtimexpath);
 	SET humantime = extractValue(unixtimexml, unixtimexpath);
 	
 	SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
@@ -245,10 +175,11 @@ END IF;
 -- Calculate credit since last day. aka Daily Credit --
 SET dailycredit = credit - oldcredit;
 
--- Update total credit on Main Project Summary table --
+-- Update total credit and last update on Main Project Summary table --
 UPDATE grc_listings.`Projects_Main`
 	SET 	`Project Total Credit`= credit,
-			`Project Compute Speed (GFlops)`= compute
+			`Project Compute Speed (GFlops)`= compute,
+			`Last Update`= humantime
 	WHERE `Project ID`= project;
 
 -- Add new line for todays date in the Project Data table --
