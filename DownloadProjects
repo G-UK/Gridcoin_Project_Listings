@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir /tmp/Projects
+mkdir /tmp/Projects/Credit
 cd /tmp/Projects/Credit
 wget -t 5 -T 30 -a log -O acoustics http://www.acousticsathome.ru/boinc/stats/tables.xml
 wget -t 5 -T 30 -a log -O asteroids http://asteroidsathome.net/boinc/stats/tables.xml
@@ -42,6 +44,7 @@ wget -t 5 -T 30 -a log -O wcg https://www.worldcommunitygrid.org/stat/viewGlobal
 wget -t 5 -T 30 -a log -O xansons https://xansons4cod.com/xansons4cod/stats/tables.xml
 wget -t 5 -T 30 -a log -O yafu https://yafu.myfirewall.org/yafu/stats/tables.xml
 wget -t 5 -T 30 -a log -O yoyo https://www.rechenkraft.net/yoyo/stats/tables.xml
+mkdir /tmp/Projects/Credit
 cd /tmp/Projects/Compute
 wget -t 5 -T 30 -a log -O acoustics http://www.acousticsathome.ru/boinc/server_status.php?xml=1
 wget -t 5 -T 30 -a log -O amicable https://sech.me/boinc/Amicable/server_status.php?xml=1
