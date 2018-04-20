@@ -133,18 +133,6 @@ IF project = 'primegrid' THEN
 
 END IF;
 
--- Sztaki Compute --
-IF project = 'sztaki' THEN
-
-	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET altstartpos = (LOCATE('last 48 hours:', althtml)) + 38;
-	SET altendpos = LOCATE(' GFlop/s', althtml, altstartpos);
-	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
-	SET altstring = REPLACE(altstring, ',', '');
-	SET compute = (CONVERT(altstring, SIGNED));
-
-END IF;
-
 -- World Community Grid Credit (Compute based on 1 Credit = 100GFLOP) --
 -- See https://www.worldcommunitygrid.org/help/viewTopic.do?shortName=points#505 --
 IF project = 'wcg' THEN
@@ -163,7 +151,7 @@ END IF;
 
 -- Compute Speed Estimates where not provided (Based on 1 Credit = 432 GFlop) --
 -- See https://chat.gridcoin.io/channel/boinc_projects?msg=slack-C19UJ8NJH-1522701808-000269 --
-IF project = ('yoyo' OR 'ddm' OR 'leiden' OR 'primaboinca') THEN
+IF project = ('yoyo' OR 'leiden' OR 'primaboinca') THEN
 
 	SET compute = (credit - oldcredit)/200;
 
