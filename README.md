@@ -5,9 +5,8 @@ Create the following folders for the stat XML download:
 /tmp/Projects/Credit
 /tmp/Projects/Compute
 
-Set the DownloadProjects Bash script to run once a day using a cron job.
-
-The SQL database should grab the relevant data from the downloaded XML's once per day at 23:00 UTC and update the project stats table.
+Set the DownloadProjects Bash script to run at least once a day using a cron job.
+Set the Update_All procedure to run after each update using a cron job.
 
 40 Days worth of data is required to get the correct Work Availability Scores (W.A.S).
 
