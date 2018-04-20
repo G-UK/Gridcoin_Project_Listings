@@ -11,7 +11,6 @@ wget -t 5 -T 30 -a log -O cpdn https://www.cpdn.org/cpdnboinc/stats/tables.xml
 wget -t 5 -T 30 -a log -O collatz https://boinc.thesonntags.com/collatz/stats/tables.xml
 wget -t 5 -T 30 -a log -O cosmology https://www.cosmologyathome.org/stats/tables.xml
 wget -t 5 -T 30 -a log -O denis https://denis.usj.es/denisathome/stats/tables.xml
-wget -t 5 -T 30 -a log -O ddm https://www.distributeddatamining.org/DistributedDataMining/stats/tables.xml
 wget -t 5 -T 30 -a log -O drugdiscovery https://boinc.drugdiscoveryathome.com/stats/tables.xml
 wget -t 5 -T 30 -a log -O einstein https://einstein.phys.uwm.edu/stats/tables.xml
 wget -t 5 -T 30 -a log -O enigma http://www.enigmaathome.net/stats/tables.xml
@@ -35,7 +34,6 @@ wget -t 5 -T 30 -a log -O seti https://setiathome.berkeley.edu/stats/tables.xml
 wget -t 5 -T 30 -a log -O skynet https://pogs.theskynet.org/pogs/stats/tables.xml
 wget -t 5 -T 30 -a log -O sourcefinder https://sourcefinder.theskynet.org/duchamp/stats/tables.xml
 wget -t 5 -T 30 -a log -O srbase http://srbase.my-firewall.org/sr5/stats/tables.xml
-wget -t 5 -T 30 -a log -O sztaki http://szdg.lpds.sztaki.hu/szdg/stats/tables.xml
 wget -t 5 -T 30 -a log -O tngrid https://gene.disi.unitn.it/test/stats/tables.xml
 wget -t 5 -T 30 -a log -O universe https://universeathome.pl/universe/stats/tables.xml
 wget -t 5 -T 30 -a log -O vgtu https://boinc.vgtu.lt/vtuathome/stats/tables.xml
