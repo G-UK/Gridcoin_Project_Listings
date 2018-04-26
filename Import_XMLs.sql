@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.26-MariaDB-0+deb9u1 - Debian 9.1
+-- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.4.0.5125
 -- --------------------------------------------------------
@@ -14,7 +14,7 @@
 -- Dumping structure for procedure grc_listings.Import_XMLs
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
-	IN `project` VARCHAR(50)
+	IN `project` VARCHAR(255)
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -31,8 +31,8 @@ DECLARE computexpath TEXT;
 DECLARE unixtimexpath TEXT;
 
 DECLARE credit BIGINT;
-DECLARE compute INT;
-DECLARE unixtime INT;
+DECLARE compute BIGINT;
+DECLARE unixtime BIGINT;
 
 DECLARE dailycredit INT;
 DECLARE humandate DATE;
@@ -43,8 +43,23 @@ DECLARE altstartpos INT;
 DECLARE altendpos INT;
 DECLARE altstring TEXT;
 
+-- Create New Line for Todays Date if required --
+SET credit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+	SET compute = (SELECT `Project Compute Speed (GFlops)` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+	SET humandate = CURDATE();
+
+IF NOT EXISTS (SELECT * 
+					FROM grc_listings.`Projects_Data`
+               WHERE `Project ID` = project AND `Date` = CURDATE())
+	
+	THEN REPLACE
+		INTO grc_listings.`Projects_Data`
+					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+		VALUES 	(project, humandate, "0", credit, compute, "0");
+END IF;
+
 -- Save current credit for project --
-SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 2 DAY)));
+SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
 -- Grab time data from XML file --
 SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
@@ -140,25 +155,18 @@ IF project = 'wcg' THEN
 	SET unixtimexpath = '/GlobalStatistics/LastUpdated';
 	SET humandate = extractValue(unixtimexml, unixtimexpath);
 	SET humantime = extractValue(unixtimexml, unixtimexpath);
-	
 	SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 	SET creditxpath = '/GlobalStatistics/StatisticsTotals/Points';
 	SET credit = (extractValue(creditxml, creditxpath)/7);
---	SET compute = ((credit - oldcredit)*100)/86400;
 	SET compute = (credit - oldcredit)/200;	
-
 END IF;
 
 -- Compute Speed Estimates where not provided (Based on 1 Credit = 432 GFlop) --
 -- See https://chat.gridcoin.io/channel/boinc_projects?msg=slack-C19UJ8NJH-1522701808-000269 --
 IF project = ('yoyo' OR 'leiden' OR 'primaboinca') THEN
-
 	SET compute = (credit - oldcredit)/200;
-
 END IF;
-
 -- End Special Import Projects --
-
 
 -- Calculate credit since last day. aka Daily Credit --
 SET dailycredit = credit - oldcredit;
@@ -174,7 +182,7 @@ UPDATE grc_listings.`Projects_Main`
 REPLACE
 	INTO grc_listings.`Projects_Data`
 				(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-	VALUES 	(project, humantime, unixtime, credit, compute, dailycredit);
+	VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
 
 END//
 DELIMITER ;
