@@ -15,6 +15,24 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(255)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
@@ -34,7 +52,7 @@ DECLARE credit BIGINT;
 DECLARE compute BIGINT;
 DECLARE unixtime BIGINT;
 
-DECLARE dailycredit INT;
+DECLARE dailycredit INT; 
 DECLARE humandate DATE;
 DECLARE humantime DATETIME;
 
@@ -44,21 +62,6 @@ DECLARE altendpos INT;
 DECLARE altstring TEXT;
 
 -- Create New Line for Todays Date if required --
-SET credit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
-	SET compute = (SELECT `Project Compute Speed (GFlops)` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
-	SET humandate = CURDATE();
-
-IF NOT EXISTS (SELECT * 
-					FROM grc_listings.`Projects_Data`
-               WHERE `Project ID` = project AND `Date` = CURDATE())
-	
-	THEN REPLACE
-		INTO grc_listings.`Projects_Data`
-					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-		VALUES 	(project, humandate, "0", credit, compute, "0");
-END IF;
-
--- Save current credit for project --
 SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
 -- Grab time data from XML file --
@@ -179,11 +182,17 @@ UPDATE grc_listings.`Projects_Main`
 	WHERE `Project ID`= project;
 
 -- Add new line for todays date in the Project Data table --
-REPLACE
-	INTO grc_listings.`Projects_Data`
-				(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-	VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
 
+IF humandate = CURDATE()
+	THEN REPLACE
+		INTO grc_listings.`Projects_Data`
+					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+		VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);	
+	ELSE REPLACE
+		INTO grc_listings.`Projects_Data`
+					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+		VALUES 	(project, CURDATE(), '0', oldcredit, '0', '0');
+END IF;
 END//
 DELIMITER ;
 
