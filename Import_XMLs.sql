@@ -15,30 +15,13 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(255)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
 -- Project files need downloading to /tmp/Project/Credit and /tmp/Project/Compute, this can be done using a bash script running as a daily cron job --
 
 DECLARE oldcredit BIGINT;
+DECLARE oldcompute BIGINT;
 
 DECLARE creditxml TEXT;
 DECLARE computexml TEXT;
@@ -63,6 +46,7 @@ DECLARE altstring TEXT;
 
 -- Create New Line for Todays Date if required --
 SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+SET oldcompute = (SELECT `Project Compute Speed (GFlops)` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
 -- Grab time data from XML file --
 SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
@@ -174,13 +158,6 @@ END IF;
 -- Calculate credit since last day. aka Daily Credit --
 SET dailycredit = credit - oldcredit;
 
--- Update total credit and last update on Main Project Summary table --
-UPDATE grc_listings.`Projects_Main`
-	SET 	`Project Total Credit`= credit,
-			`Project Compute Speed (GFlops)`= compute,
-			`Last Update`= humantime
-	WHERE `Project ID`= project;
-
 -- Add new line for todays date in the Project Data table --
 
 IF humandate = CURDATE()
@@ -191,7 +168,24 @@ IF humandate = CURDATE()
 	ELSE REPLACE
 		INTO grc_listings.`Projects_Data`
 					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-		VALUES 	(project, CURDATE(), '0', oldcredit, '0', '0');
+		VALUES 	(project, CURDATE(), '0', oldcredit, oldcompute, '0');
+END IF;
+
+-- Update total credit and last update on Main Project Summary table --
+
+IF humandate = CURDATE()
+	THEN 
+		UPDATE grc_listings.`Projects_Main`
+		SET 	`Project Total Credit`= credit,
+				`Project Compute Speed (GFlops)`= compute,
+				`Last Update`= humantime
+		WHERE `Project ID`= project;
+	ELSE
+		UPDATE grc_listings.`Projects_Main`
+		SET 	`Project Total Credit`= oldcredit,
+				`Project Compute Speed (GFlops)`= oldcompute,
+				`Last Update`= humantime
+		WHERE `Project ID`= project;
 END IF;
 END//
 DELIMITER ;
