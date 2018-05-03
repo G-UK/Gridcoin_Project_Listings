@@ -16,7 +16,7 @@ DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
-    COMMENT 'This procedure calculates the project stats needed for calculating the listings and updates the Main Project Summary table'
+    COMMENT 'This procedure calculates the project stats needed for calculating the listings and updates the Main Project Summary table. Called by the Update_All procedure'
 BEGIN
 DECLARE today DATE;
 DECLARE sevenday DATE;
@@ -26,9 +26,6 @@ DECLARE sevenavg BIGINT;
 DECLARE fourtyavg BIGINT;
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
-DECLARE whitelist TINYTEXT;
-DECLARE expwhitelist TINYTEXT;
-DECLARE recwhitelist TINYTEXT;
 DECLARE compute BIGINT;
 DECLARE vote TINYTEXT;
 DECLARE currentstatus TINYTEXT;
@@ -73,95 +70,12 @@ SET zcd = (SELECT COUNT(`Project Daily Credit`)
 	FROM grc_listings.`Projects_Data`
 	WHERE (`Date`>= twentyday) AND (`Date`<= today) AND (`Project ID`= project) AND (`Project Daily Credit`= '0'));
 
--- Calculate "Calculated" listing category --
-
-IF
-	(was >= '0.1') AND
-	(zcd <= '7') AND
-	(vote != 'OUT') AND
-	(currentstatus != 'Unlisted')
-	THEN SET whitelist = 'Whitelisted';
-
-ELSEIF
-	((was < '0.1') OR
-	(zcd > '7') OR
-	(vote != 'Out')) AND
-	(currentstatus != 'Unlisted')
-	THEN SET whitelist = 'Greylisted'; 
-
-ELSE SET whitelist = 'Unlisted';
-
-END IF;
-
--- Calculate "Experimental" listing category, testing for process updates --
-
-IF 
-	(was >= '0.1') AND
-	(zcd <= '7') AND
-	((compute >= '2500') OR (compute = '0')) AND
-	(vote != 'Out') AND
-	(currentstatus != 'Unlisted')
-	THEN SET expwhitelist = 'Whitelisted';
-	
-ELSEIF
-	((was < '0.1') OR
-	(zcd > '7') OR
-	((compute < '2500') OR (compute = '0')) OR
-	(vote != 'Out')) AND
-	(currentstatus != 'Unlisted')
-	THEN SET expwhitelist = 'Greylisted';
-
-ELSE SET expwhitelist = 'Unlisted';
-
-END IF;
-
--- Calculate "Experimental Recommended" listing category, testing for process updates
-
-IF 
-	(was >= '0.1') AND
-	(zcd <= '7') AND
-	(compute >= '2500')
-	THEN SET recwhitelist = 'Whitelisted';
-	
-ELSEIF
-	(was < '0.1') OR
-	(zcd > '7') OR
-	(compute < '2500')
-	THEN SET recwhitelist = 'Greylisted';
-
-ELSE SET recwhitelist = 'Unlisted';
-
-END IF;
-
--- Enter Project Overrides Here (Used for projects not exporting stats through tables.xml) --
--- SETI doesn't export stats in the files we collect but they are a big project with consistant work over many years --
-IF (project = 'seti') THEN
-	SET whitelist = 'Whitelisted (Override)',
-	expwhitelist = 'Whitelisted (Override)',
-	recwhitelist = 'Whitelisted (Override)';
-END IF;
-
--- WEP doesn't export stats in the files we collect and they are a small project that would be unlikely to support our load --
-IF (project = 'wep') THEN
-	SET whitelist = 'Unlisted (Override)';
-END IF;
-
--- Leiden do not accept new user sign-ups so cannot be whitelisted regardless of work --
-IF (project = 'leiden') THEN
-	SET whitelist = 'Unlisted (Override)',
-	expwhitelist = 'Unlisted (Override)',
-	recwhitelist = 'Greylisted (Override)';
-END IF;
-
 -- Update main Project Summary --
 UPDATE 	grc_listings.`Projects_Main`
 	SET 	`Project Avg Daily Credit (7 Day)`= sevenavg,
 			`Project Avg Daily Credit (40 Day)`= fourtyavg,
 			`W.A.S (Work Availability Score)`= was,
 			`Z.C.D (Zero Days Credit)`= zcd,
-			`Calculated Status` = whitelist,
-			`Calculated Status (Experimental)` = expwhitelist,
-			`Recommended Status (Experimental)` = recwhitelist
 	WHERE `Project ID`= project;
 
 END//
