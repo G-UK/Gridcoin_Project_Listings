@@ -1,10 +1,3 @@
--- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.26-MariaDB-0+deb9u1 - Debian 9.1
--- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
--- --------------------------------------------------------
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
@@ -14,19 +7,19 @@
 -- Dumping structure for procedure grc_listings.Update_All
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_All`()
-    COMMENT 'This procedure calls Import and Maths procedures for each project'
+    COMMENT 'This procedure calls Import and Maths procedures for each project. Run at least once per day before 23:00UTC'
 BEGIN
 -- There is possibly a better way of doing this but I am a beginner with SQL--
 
 CALL `Import_XMLs`('acoustics');
 CALL `Update_Maths`('acoustics');
-CALL `Amicable_Import`('amicable');
+CALL `Import_XMLs`('amicable');
 CALL `Update_Maths`('amicable');
 CALL `Import_XMLs`('asteroids');
 CALL `Update_Maths`('asteroids');
 CALL `Import_XMLs`('cas');
 CALL `Update_Maths`('cas');
-CALL `Collatz_Import`('collatz');
+CALL `Import_XMLs`('collatz');
 CALL `Update_Maths`('collatz');
 CALL `Import_XMLs`('cosmology');
 CALL `Update_Maths`('cosmology');
@@ -38,7 +31,7 @@ CALL `Import_XMLs`('denis');
 CALL `Update_Maths`('denis');
 CALL `Import_XMLs`('drugdiscovery');
 CALL `Update_Maths`('drugdiscovery');
-CALL `Einstein_Import`('einstein');
+CALL `Import_XMLs`('einstein');
 CALL `Update_Maths`('einstein');
 CALL `Import_XMLs`('enigma');
 CALL `Update_Maths`('enigma');
@@ -88,7 +81,7 @@ CALL `Import_XMLs`('universe');
 CALL `Update_Maths`('universe');
 CALL `Import_XMLs`('vgtu');
 CALL `Update_Maths`('vgtu');
-CALL `WCG_Import`('wcg');
+CALL `Import_XMLs`('wcg');
 CALL `Update_Maths`('wcg');
 CALL `Import_XMLs`('wep');
 CALL `Update_Maths`('wep');
