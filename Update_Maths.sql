@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.26-MariaDB-0+deb9u1 - Debian 9.1
+-- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.4.0.5125
 -- --------------------------------------------------------
@@ -16,7 +16,7 @@ DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
-    COMMENT 'This procedure calculates the project stats needed for calculating the listings and updates the Main Project Summary table. Called by the Update_All procedure'
+    COMMENT 'This procedure calculates the project stats needed for calculation'
 BEGIN
 DECLARE today DATE;
 DECLARE sevenday DATE;
@@ -27,27 +27,12 @@ DECLARE fourtyavg BIGINT;
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
 DECLARE compute BIGINT;
-DECLARE vote TINYTEXT;
-DECLARE currentstatus TINYTEXT;
 
 -- Set Dates relative to the current date --
 SET today = CURDATE();
 SET sevenday = DATE_SUB(CURDATE(), INTERVAL 7 DAY);
 SET twentyday = DATE_SUB(CURDATE(), INTERVAL 20 DAY);
 SET fourtyday = DATE_SUB(CURDATE(), INTERVAL 40 DAY);
-
--- Set variables from database --
-SET vote = (SELECT `Vote (In/Out)`
-	FROM grc_listings.`Projects_Main`
-	WHERE `Project ID`= project);
-	
-SET compute = (SELECT `Project Compute Speed (GFlops)`
-	FROM grc_listings.`Projects_Main`
-	WHERE `Project ID`= project);
-	
-SET currentstatus = (SELECT `Current Status`
-	FROM grc_listings.`Projects_Main`
-	WHERE `Project ID`= project);
 
 -- Calculate the 7 day average daily credit for the project --
 SET sevenavg = (SELECT AVG(`Project Daily Credit`)
@@ -75,7 +60,7 @@ UPDATE 	grc_listings.`Projects_Main`
 	SET 	`Project Avg Daily Credit (7 Day)`= sevenavg,
 			`Project Avg Daily Credit (40 Day)`= fourtyavg,
 			`W.A.S (Work Availability Score)`= was,
-			`Z.C.D (Zero Days Credit)`= zcd,
+			`Z.C.D (Zero Credit Days)`= zcd
 	WHERE `Project ID`= project;
 
 END//

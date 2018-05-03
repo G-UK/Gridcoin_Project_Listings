@@ -13,16 +13,16 @@
 
 -- Dumping structure for table grc_listings.Projects_Misc_Data
 CREATE TABLE IF NOT EXISTS `Projects_Misc_Data` (
-  `Project ID` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `Project ID` varchar(255) NOT NULL,
   `Tables.xml` varchar(255) DEFAULT NULL,
   `creditxpath` varchar(255) DEFAULT NULL,
   `ServerStatus.xml` varchar(255) DEFAULT NULL,
   `computexpath` varchar(255) DEFAULT NULL,
-  KEY `FK_MiscData_projects` (`Project ID`),
-  CONSTRAINT `FK_MiscData_projects` FOREIGN KEY (`Project ID`) REFERENCES `Projects_Main` (`Project ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Just some random data on the Projects I ended up not using in the database.';
+  KEY `FK_Projects_Misc_Data_Projects_Main` (`Project ID`),
+  CONSTRAINT `FK_Projects_Misc_Data_Projects_Main` FOREIGN KEY (`Project ID`) REFERENCES `Projects_Main` (`Project ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Just some random data on the Projects I ended up not using in the database.';
 
--- Dumping data for table grc_listings.Projects_Misc_Data: ~43 rows (approximately)
+-- Dumping data for table grc_listings.Projects_Misc_Data: ~41 rows (approximately)
 /*!40000 ALTER TABLE `Projects_Misc_Data` DISABLE KEYS */;
 INSERT INTO `Projects_Misc_Data` (`Project ID`, `Tables.xml`, `creditxpath`, `ServerStatus.xml`, `computexpath`) VALUES
 	('acoustics', 'http://www.acousticsathome.ru/boinc/stats/tables.xml\r\n', '/tables/total_credit', 'http://www.acousticsathome.ru/boinc/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),

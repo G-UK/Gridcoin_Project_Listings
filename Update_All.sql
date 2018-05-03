@@ -1,3 +1,10 @@
+-- --------------------------------------------------------
+-- Host:                         192.168.0.25
+-- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server OS:                    debian-linux-gnu
+-- HeidiSQL Version:             9.4.0.5125
+-- --------------------------------------------------------
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
@@ -7,7 +14,7 @@
 -- Dumping structure for procedure grc_listings.Update_All
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_All`()
-    COMMENT 'This procedure calls Import and Maths procedures for each project. Run at least once per day before 23:00UTC'
+    COMMENT 'This procedure calls Import and Maths procedures for each projec'
 BEGIN
 -- There is possibly a better way of doing this but I am a beginner with SQL--
 
@@ -47,6 +54,8 @@ CALL `Import_XMLs`('lhc');
 CALL `Update_Maths`('lhc');
 CALL `Import_XMLs`('milkyway');
 CALL `Update_Maths`('milkyway');
+CALL `Import_XMLs`('mindmodelling');
+CALL `Update_Maths`('mindmodelling');
 CALL `Import_XMLs`('moowrap');
 CALL `Update_Maths`('moowrap');
 CALL `Import_XMLs`('nfs');
