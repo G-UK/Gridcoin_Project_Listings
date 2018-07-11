@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -15,8 +15,6 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Listing`(
 	IN `project` VARCHAR(250)
-
-
 )
 BEGIN
 
@@ -118,12 +116,21 @@ IF (project = 'wep')
         whitelist = 'Unlisted (Override)';
 END IF;
 
--- Leiden do not accept new user sign-ups so cannot be whitelisted regardless of work --
+-- WCG does not allow stats export --
 
-IF (project = 'leiden')
+IF (project = 'wcg')
     THEN SET
-        whitelist = 'Unlisted (Override)',
-        expwhitelist = 'Unlisted (Override)',
+        whitelist = 'Greylisted (Override)',
+        expwhitelist = 'Greylisted (Override)',
+        recwhitelist = 'Greylisted (Override)';
+END IF;
+
+-- Einstein does not allow stats export --
+
+IF (project = 'einstein')
+    THEN SET
+        whitelist = 'Greylisted (Override)',
+        expwhitelist = 'Greylisted (Override)',
         recwhitelist = 'Greylisted (Override)';
 END IF;
 

@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -40,7 +40,6 @@ INSERT INTO `Projects_Misc_Data` (`Project ID`, `Tables.xml`, `creditxpath`, `Se
 	('gerasim', 'http://gerasim.boinc.ru/stats/tables.xml', '/tables/total_credit\r\n', 'http://gerasim.boinc.ru/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('goofycpu', 'http://cpu.goofyxgridathome.net/stats/tables.xml', '/tables/total_credit\r\n', 'http://cpu.goofyxgridathome.net/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('gpugrid', 'https://www.gpugrid.net/stats/tables.xml', '/tables/total_credit\r\n', 'https://www.gpugrid.net/server_status.php', NULL),
-	('leiden', 'https://boinc.gorlaeus.net/stats/tables.xml', '/tables/total_credit\r\n', NULL, NULL),
 	('lhc', 'https://lhcathome.cern.ch/lhcathome/stats/tables.xml', '/tables/total_credit\r\n', 'https://lhcathome.cern.ch/lhcathome/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('milkyway', 'https://milkyway.cs.rpi.edu/milkyway/stats/tables.xml', '/tables/total_credit\r\n', 'https://milkyway.cs.rpi.edu/milkyway/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('moowrap', 'https://moowrap.net/stats/tables.xml', '/tables/total_credit\r\n', 'https://moowrap.net/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
@@ -54,8 +53,6 @@ INSERT INTO `Projects_Misc_Data` (`Project ID`, `Tables.xml`, `creditxpath`, `Se
 	('rnaworld', 'https://www.rnaworld.de/rnaworld/stats/tables.xml', '/tables/total_credit\r\n', 'https://www.rnaworld.de/rnaworld/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('rosetta', 'https://boinc.bakerlab.org/rosetta/stats/tables.xml', '/tables/total_credit\r\n', 'https://boinc.bakerlab.org/rosetta/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('seti', 'https://setiathome.berkeley.edu/stats/tables.xml', '/tables/total_credit\r\n', NULL, NULL),
-	('skynet', 'https://pogs.theskynet.org/pogs/stats/tables.xml', '/tables/total_credit\r\n', 'https://pogs.theskynet.org/pogs/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
-	('sourcefinder', 'https://sourcefinder.theskynet.org/duchamp/stats/tables.xml', '/tables/total_credit\r\n', 'https://sourcefinder.theskynet.org/duchamp/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('srbase', 'http://srbase.my-firewall.org/sr5/stats/tables.xml', '/tables/total_credit\r\n', 'http://srbase.my-firewall.org/sr5/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('tngrid', 'https://gene.disi.unitn.it/test/stats/tables.xml', '/tables/total_credit\r\n', 'https://gene.disi.unitn.it/test/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),
 	('universe', 'https://universeathome.pl/universe/stats/tables.xml', '/tables/total_credit\r\n', 'https://universeathome.pl/universe/server_status.php?xml=1', '/server_status/database_file_states/current_floating_point_speed\r\n'),

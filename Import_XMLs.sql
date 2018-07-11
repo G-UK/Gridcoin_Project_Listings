@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -150,7 +150,7 @@ END IF;
 
 -- Compute Speed Estimates where not provided (Based on 1 Credit = 432 GFlop) --
 -- See https://chat.gridcoin.io/channel/boinc_projects?msg=slack-C19UJ8NJH-1522701808-000269 --
-IF project = ('yoyo' OR 'leiden' OR 'primaboinca') THEN
+IF project = ('yoyo' OR 'primaboinca') THEN
 	SET compute = (credit - oldcredit)/200;
 END IF;
 -- End Special Import Projects --

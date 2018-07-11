@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,7 +16,7 @@ DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
-    COMMENT 'This procedure calculates the project stats needed for calculation'
+    COMMENT 'This procedure calculates the project stats needed for calculati'
 BEGIN
 DECLARE today DATE;
 DECLARE sevenday DATE;

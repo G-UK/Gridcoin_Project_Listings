@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6 - Debian buildd-unstable
+-- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.4.0.5125
+-- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -48,8 +48,6 @@ CALL `Import_XMLs`('goofycpu');
 CALL `Update_Maths`('goofycpu');
 CALL `Import_XMLs`('gpugrid');
 CALL `Update_Maths`('gpugrid');
-CALL `Import_XMLs`('leiden');
-CALL `Update_Maths`('leiden');
 CALL `Import_XMLs`('lhc');
 CALL `Update_Maths`('lhc');
 CALL `Import_XMLs`('milkyway');
@@ -78,10 +76,6 @@ CALL `Import_XMLs`('rosetta');
 CALL `Update_Maths`('rosetta');
 CALL `Import_XMLs`('seti');
 CALL `Update_Maths`('seti');
-CALL `Import_XMLs`('skynet');
-CALL `Update_Maths`('skynet');
-CALL `Import_XMLs`('sourcefinder');
-CALL `Update_Maths`('sourcefinder');
 CALL `Import_XMLs`('srbase');
 CALL `Update_Maths`('srbase');
 CALL `Import_XMLs`('tngrid');
