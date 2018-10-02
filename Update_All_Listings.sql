@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
+-- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
@@ -14,7 +14,7 @@
 -- Dumping structure for procedure grc_listings.Update_All_Listings
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_All_Listings`()
-    COMMENT 'This procedure calls the Update_Listing procedure for each project. To be ran once per day at 23:00 UTC'
+    COMMENT 'This procedure calls the Update_Listing procedure for each proje'
 BEGIN
 
 -- There is possibly a better way of doing this but I am a beginner with SQL--
@@ -28,6 +28,7 @@ CALL `Update_Listing`('cosmology');
 CALL `Update_Listing`('cpdn');
 CALL `Update_Listing`('csg');
 CALL `Update_Listing`('denis');
+CALL `Update_Listing`('dhep');
 CALL `Update_Listing`('drugdiscovery');
 CALL `Update_Listing`('einstein');
 CALL `Update_Listing`('enigma');

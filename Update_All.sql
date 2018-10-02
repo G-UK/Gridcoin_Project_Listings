@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
+-- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
@@ -36,6 +36,8 @@ CALL `Import_XMLs`('csg');
 CALL `Update_Maths`('csg');
 CALL `Import_XMLs`('denis');
 CALL `Update_Maths`('denis');
+CALL `Import_XMLs`('dhep');
+CALL `Update_Maths`('dhep');
 CALL `Import_XMLs`('drugdiscovery');
 CALL `Update_Maths`('drugdiscovery');
 CALL `Import_XMLs`('einstein');

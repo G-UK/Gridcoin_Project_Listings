@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
+-- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
@@ -16,14 +16,20 @@ DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
-    COMMENT 'This procedure calculates the project stats needed for calculati'
+    COMMENT 'This procedure calculates the project stats'
 BEGIN
+
+-- Calculated Dates --
 DECLARE today DATE;
 DECLARE sevenday DATE;
 DECLARE twentyday DATE;
 DECLARE fourtyday DATE;
+
+-- Average Daily Credit over period --
 DECLARE sevenavg BIGINT;
 DECLARE fourtyavg BIGINT;
+
+-- Calculated Values --
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
 DECLARE compute BIGINT;
@@ -44,7 +50,7 @@ SET fourtyavg = (SELECT AVG(`Project Daily Credit`)
 	FROM grc_listings.`Projects_Data`
 	WHERE (`Date`>= fourtyday) AND (`Date`< today) AND (`Project ID`= project));
 
--- Calculate Work Availability Score (WAS) --
+-- Calculate Work Availability Score (WAS) avoiding divide by zero --
 IF fourtyavg = '0'
 	THEN SET was = '0';
 	ELSE SET was = sevenavg / fourtyavg;

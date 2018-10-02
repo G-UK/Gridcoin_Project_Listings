@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.25
--- Server version:               10.1.29-MariaDB-6+b1 - Debian buildd-unstable
+-- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             9.5.0.5196
 -- --------------------------------------------------------
@@ -18,14 +18,16 @@ CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Listing`(
 )
 BEGIN
 
-DECLARE whitelist TINYTEXT;
-DECLARE expwhitelist TINYTEXT;
-DECLARE recwhitelist TINYTEXT;
+-- Pull existing values--
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
-DECLARE compute BIGINT;
 DECLARE vote TINYTEXT;
+DECLARE compute BIGINT;
 DECLARE currentstatus TINYTEXT;
+
+-- Values to be calculated --
+DECLARE listing TINYTEXT;
+DECLARE suitability TINYTEXT;
 
 SET was = (SELECT `W.A.S (Work Availability Score)`
     FROM grc_listings.`Projects_Main`
@@ -47,55 +49,37 @@ SET currentstatus = (SELECT `Current Status`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
 
--- Calculate "Calculated" listing category --
+-- Calculate "Listing" category --
 IF 
     (was >= '0.1') AND
     (zcd <= '7') AND
     (vote != 'OUT') AND
     (currentstatus != 'Unlisted')
-    THEN SET whitelist = 'Whitelisted';
+    THEN SET listing = 'Whitelisted';
 
 ELSEIF ((was < '0.1') OR (zcd > '7') OR (vote != 'Out')) AND
         (currentstatus != 'Unlisted')
-        THEN SET whitelist = 'Greylisted'; 
+        THEN SET listing = 'Greylisted'; 
 
 ELSE SET
-    whitelist = 'Unlisted';
+    listing = 'Unlisted';
 
 END IF;
 
--- Calculate "Experimental" listing category, testing for process updates --
-IF
-    (was >= '0.1') AND
-    (zcd <= '7') AND
-    ((compute >= '2500') OR (compute = '0')) AND
-    (vote != 'Out') AND
-    (currentstatus != 'Unlisted')
-    THEN SET expwhitelist = 'Whitelisted';
-
-ELSEIF ((was < '0.1') OR (zcd > '7') OR ((compute < '2500') OR (compute = '0')) OR (vote != 'Out')) AND
-    (currentstatus != 'Unlisted') 
-    THEN SET expwhitelist = 'Greylisted';
-
-ELSE SET
-    expwhitelist = 'Unlisted';
-
-END IF;
-
--- Calculate "Experimental Recommended" listing category, testing for process updates
+-- Calculate "Suitability" category --
 IF  
     (was >= '0.1') AND
     (zcd <= '7') AND
-    (compute >= '2500')
-    THEN SET recwhitelist = 'Whitelisted';
+    (compute >= '5000')
+    THEN SET suitability = 'Suitable for Rewards';
 
 ELSEIF
     (was < '0.1') OR
     (zcd > '7') OR
-    (compute < '2500')
-    THEN SET recwhitelist = 'Greylisted';
+    (compute < '5000')
+    THEN SET suitability = 'Unsuitable for Rewards';
 
-ELSE SET recwhitelist = 'Unlisted';
+ELSE SET suitability = 'Unsuitable for Rewards';
 
 END IF;
 
@@ -104,42 +88,15 @@ END IF;
 
 IF (project = 'seti')
     THEN SET
-        whitelist = 'Whitelisted (Override)',
-        expwhitelist = 'Whitelisted (Override)',
-        recwhitelist = 'Whitelisted (Override)';
-END IF;
-
--- WEP doesn't export stats in the files we collect and they are a small project that would be unlikely to support our load --
-
-IF (project = 'wep')
-    THEN SET
-        whitelist = 'Unlisted (Override)';
-END IF;
-
--- WCG does not allow stats export --
-
-IF (project = 'wcg')
-    THEN SET
-        whitelist = 'Greylisted (Override)',
-        expwhitelist = 'Greylisted (Override)',
-        recwhitelist = 'Greylisted (Override)';
-END IF;
-
--- Einstein does not allow stats export --
-
-IF (project = 'einstein')
-    THEN SET
-        whitelist = 'Greylisted (Override)',
-        expwhitelist = 'Greylisted (Override)',
-        recwhitelist = 'Greylisted (Override)';
+        listing = 'Whitelisted',
+        suitability = 'Suitable for Rewards';
 END IF;
 
 -- Update main Project Summary --
 
 UPDATE grc_listings.`Projects_Main`
-    SET `Calculated Status` = whitelist,
-        `Calculated Status (Experimental)` = expwhitelist,
-        `Recommended Status (Experimental)` = recwhitelist
+    SET `Project Status` = listing,
+        `Project Suitability` = suitability
     WHERE `Project ID` = project;
     
 END//
