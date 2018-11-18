@@ -98,12 +98,6 @@ IF (project = 'primegrid')
         suitability = 'Unsuitable for Rewards';
 END IF;
 
-IF (project = 'dhep')
-    THEN SET
-        listing = 'Whitelisted',
-        suitability = 'Suitable for Rewards';
-END IF;
-
 -- Update main Project Summary --
 
 UPDATE grc_listings.`Projects_Main`
