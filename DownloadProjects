@@ -1,9 +1,7 @@
 #!/bin/bash
 mkdir /tmp/Projects
-
 mkdir /tmp/Projects/Credit
 cd /tmp/Projects/Credit
-
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a acoustics-log -O acoustics "http://www.acousticsathome.ru/boinc/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a asteroids-log -O asteroids "http://asteroidsathome.net/boinc/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a amicable-log -O amicable "https://sech.me/boinc/Amicable/stats/tables.xml"
@@ -12,6 +10,7 @@ wget --dns-timeout=0 --waitretry=1 --tries=5 -a csg-log -O csg "https://csgrid.o
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a cpdn-log -O cpdn "https://www.cpdn.org/cpdnboinc/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a collatz-log -O collatz "https://boinc.thesonntags.com/collatz/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a cosmology-log -O cosmology "https://www.cosmologyathome.org/stats/tables.xml"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a dbn-log -O dbn "http://anthgrid.com/dbnupperbound/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a denis-log -O denis "https://denis.usj.es/denisathome/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a dhep-log -O dhep "http://dhep.ga/boinc/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a drugdiscovery-log -O drugdiscovery "https://boinc.drugdiscoveryathome.com/stats/tables.xml"
@@ -24,12 +23,13 @@ wget --dns-timeout=0 --waitretry=1 --tries=5 -a lhc-log -O lhc "https://lhcathom
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a milkyway-log -O milkyway "https://milkyway.cs.rpi.edu/milkyway/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a mindmodelling-log -O mindmodelling "https://mindmodeling.org/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a moowrap-log -O moowrap "https://moowrap.net/stats/tables.xml"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a nano-log -O nano "https://boinc.nanohub.org/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a nfs-log -O nfs "https://escatter11.fullerton.edu/nfs/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a numberfields-log -O numberfields "https://numberfields.asu.edu/NumberFields/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a odlk-log -O odlk "https://boinc.progger.info/odlk/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a odlk1-log -O odlk1 "https://boinc.multi-pool.info/latinsquares/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a primaboinca-log -O primaboinca "http://www.primaboinca.com/stats/tables.xml"
-wget --dns-timeout=0 --waitretry=1 --tries=5 -a primegrid-log -O primegrid "https://www.primegrid.com/stats/tables.xml"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a primegrid-log -O primegrid "https://GUK:pj7pZuwSYncgcqbAnrdbbsdyj9sct2pX@www.primegrid.com/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rakesearch-log -O rakesearch "http://rake.boincfast.ru/rakesearch/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rnaworld-log -O rnaworld "https://www.rnaworld.de/rnaworld/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rosetta-log -O rosetta "https://boinc.bakerlab.org/rosetta/stats/tables.xml"
@@ -43,18 +43,18 @@ wget --dns-timeout=0 --waitretry=1 --tries=5 -a wcg-log -O wcg "https://www.worl
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a xansons-log -O xansons "https://xansons4cod.com/xansons4cod/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a yafu-log -O yafu "https://yafu.myfirewall.org/yafu/stats/tables.xml"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a yoyo-log -O yoyo "https://www.rechenkraft.net/yoyo/stats/tables.xml"
-
 mkdir /tmp/Projects/Compute
 cd /tmp/Projects/Compute
-
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a acoustics-log -O acoustics "http://www.acousticsathome.ru/boinc/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a amicable-log -O amicable "https://sech.me/boinc/Amicable/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a asteroids-log -O asteroids "http://asteroidsathome.net/boinc/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a cas-log -O cas "http://casathome.ihep.ac.cn/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a collatz-log -O collatz "https://boinc.thesonntags.com/collatz/server_status.php?xml=1"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a cas-log -O cas "http://casathome.ihep.ac.cn/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a cosmology-log -O cosmology "https://www.cosmologyathome.org/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a cpdn-log -O cpdn "https://www.cpdn.org/cpdnboinc/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a csg-log -O csg "https://csgrid.org/csg/server_status.php?xml=1"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a dbn-log -O dbn "http://anthgrid.com/dbnupperbound/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a denis-log -O denis "https://denis.usj.es/denisathome/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a dhep-log -O dhep "http://dhep.ga/boinc/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a drugdiscovery-log -O drugdiscovery "https://boinc.drugdiscoveryathome.com/server_status.php?xml=1"
@@ -66,14 +66,14 @@ wget --dns-timeout=0 --waitretry=1 --tries=5 -a lhc-log -O lhc "https://lhcathom
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a milkyway-log -O milkyway "https://milkyway.cs.rpi.edu/milkyway/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a mindmodelling-log -O mindmodelling "https://mindmodeling.org/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a moowrap-log -O moowrap "https://moowrap.net/server_status.php?xml=1"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a nano -O nano "https://boinc.nanohub.org/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a nfs-log -O nfs "https://escatter11.fullerton.edu/nfs/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a numberfields-log -O numberfields "https://numberfields.asu.edu/NumberFields/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a odlk-log -O odlk "https://boinc.progger.info/odlk/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a odlk1-log -O odlk1 "https://boinc.multi-pool.info/latinsquares/server_status.php?xml=1"
+wget --dns-timeout=0 --waitretry=1 --tries=5 -a primegrid-log -O primegrid "https://www.primegrid.com/server_status.php"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rakesearch-log -O rakesearch "http://rake.boincfast.ru/rakesearch/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rnaworld-log -O rnaworld "https://www.rnaworld.de/rnaworld/server_status.php?xml=1"
-wget --dns-timeout=0 --waitretry=1 --tries=5 -a rosetta-log -O rosetta "https://boinc.bakerlab.org/rosetta/server_status.php?xml=1"
-wget --dns-timeout=0 --waitretry=1 --tries=5 -a srbase-log -O srbase "http://srbase.my-firewall.org/sr5/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a rosetta-log -O rosetta "https://boinc.bakerlab.org/rosetta/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a srbase-log -O srbase "http://srbase.my-firewall.org/sr5/server_status.php?xml=1"
 wget --dns-timeout=0 --waitretry=1 --tries=5 -a tngrid-log -O tngrid "https://gene.disi.unitn.it/test/server_status.php?xml=1"
