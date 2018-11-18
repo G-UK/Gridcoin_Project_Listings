@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
+-- Host:                         192.168.0.105
+-- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5196
+-- HeidiSQL Version:             9.5.0.5338
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -87,6 +87,18 @@ END IF;
 -- SETI doesn't export stats in the files we collect but they are a big project with consistant work over many years --
 
 IF (project = 'seti')
+    THEN SET
+        listing = 'Whitelisted',
+        suitability = 'Suitable for Rewards';
+END IF;
+
+IF (project = 'primegrid')
+    THEN SET
+        listing = 'Unlisted',
+        suitability = 'Unsuitable for Rewards';
+END IF;
+
+IF (project = 'dhep')
     THEN SET
         listing = 'Whitelisted',
         suitability = 'Suitable for Rewards';

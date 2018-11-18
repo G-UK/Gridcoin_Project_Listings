@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
+-- Host:                         192.168.0.105
+-- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5196
+-- HeidiSQL Version:             9.5.0.5338
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -27,6 +27,7 @@ CALL `Update_Listing`('collatz');
 CALL `Update_Listing`('cosmology');
 CALL `Update_Listing`('cpdn');
 CALL `Update_Listing`('csg');
+CALL `Update_Listing`('dbn');
 CALL `Update_Listing`('denis');
 CALL `Update_Listing`('dhep');
 CALL `Update_Listing`('drugdiscovery');
@@ -38,6 +39,7 @@ CALL `Update_Listing`('gpugrid');
 CALL `Update_Listing`('lhc');
 CALL `Update_Listing`('milkyway');
 CALL `Update_Listing`('moowrap');
+CALL `Update_Listing`('nano');
 CALL `Update_Listing`('nfs');
 CALL `Update_Listing`('numberfields');
 CALL `Update_Listing`('odlk');

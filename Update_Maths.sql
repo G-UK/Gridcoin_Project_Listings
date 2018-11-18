@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
+-- Host:                         192.168.0.105
+-- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5196
+-- HeidiSQL Version:             9.5.0.5338
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,7 +16,7 @@ DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
-    COMMENT 'This procedure calculates the project stats'
+    COMMENT 'This procedure calculates the project stats needed for calculati'
 BEGIN
 
 -- Calculated Dates --
@@ -35,10 +35,10 @@ DECLARE zcd BIGINT;
 DECLARE compute BIGINT;
 
 -- Set Dates relative to the current date --
-SET today = CURDATE();
-SET sevenday = DATE_SUB(CURDATE(), INTERVAL 7 DAY);
-SET twentyday = DATE_SUB(CURDATE(), INTERVAL 20 DAY);
-SET fourtyday = DATE_SUB(CURDATE(), INTERVAL 40 DAY);
+SET today = DATE_SUB(CURDATE(), INTERVAL 1 DAY);
+SET sevenday = DATE_SUB(CURDATE(), INTERVAL 8 DAY);
+SET twentyday = DATE_SUB(CURDATE(), INTERVAL 21 DAY);
+SET fourtyday = DATE_SUB(CURDATE(), INTERVAL 41 DAY);
 
 -- Calculate the 7 day average daily credit for the project --
 SET sevenavg = (SELECT AVG(`Project Daily Credit`)

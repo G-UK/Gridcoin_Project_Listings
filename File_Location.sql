@@ -11,18 +11,14 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Dumping structure for table grc_listings.Projects_Data
-CREATE TABLE IF NOT EXISTS `Projects_Data` (
+-- Dumping structure for table grc_listings.File_Location
+CREATE TABLE IF NOT EXISTS `File_Location` (
   `Project ID` varchar(50) NOT NULL,
-  `Date` date NOT NULL,
-  `Unix Timestamp` bigint(20) NOT NULL,
-  `Project Total Credit` bigint(20) NOT NULL,
-  `Project Compute Speed (GFlops)` int(10) unsigned DEFAULT '0',
-  `Project Daily Credit` bigint(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Project ID`,`Date`),
-  KEY `Project ID` (`Project ID`),
-  CONSTRAINT `FK_Projects_Data_Projects_Main` FOREIGN KEY (`Project ID`) REFERENCES `Projects_Main` (`Project ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Daily data for all the projects';
+  `Compute Path` text,
+  `Compute XPath` text,
+  PRIMARY KEY (`Project ID`),
+  CONSTRAINT `FK_File_Location_Projects_Main` FOREIGN KEY (`Project ID`) REFERENCES `Projects_Main` (`Project ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Project File Locations';
 
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

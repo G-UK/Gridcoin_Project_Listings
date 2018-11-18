@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
+-- Host:                         192.168.0.105
+-- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5196
+-- HeidiSQL Version:             9.5.0.5338
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -34,6 +34,8 @@ CALL `Import_XMLs`('cpdn');
 CALL `Update_Maths`('cpdn');
 CALL `Import_XMLs`('csg');
 CALL `Update_Maths`('csg');
+CALL `Import_XMLs`('dbn');
+CALL `Update_Maths`('dbn');
 CALL `Import_XMLs`('denis');
 CALL `Update_Maths`('denis');
 CALL `Import_XMLs`('dhep');
@@ -58,6 +60,8 @@ CALL `Import_XMLs`('mindmodelling');
 CALL `Update_Maths`('mindmodelling');
 CALL `Import_XMLs`('moowrap');
 CALL `Update_Maths`('moowrap');
+CALL `Import_XMLs`('nano');
+CALL `Update_Maths`('nano');
 CALL `Import_XMLs`('nfs');
 CALL `Update_Maths`('nfs');
 CALL `Import_XMLs`('numberfields');

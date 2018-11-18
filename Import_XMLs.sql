@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         192.168.0.25
--- Server version:               10.1.35-MariaDB-1 - Debian buildd-unstable
+-- Host:                         192.168.0.105
+-- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5196
+-- HeidiSQL Version:             9.5.0.5338
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -14,20 +14,22 @@
 -- Dumping structure for procedure grc_listings.Import_XMLs
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
-	IN `project` VARCHAR(255)
+	IN `project` VARCHAR(50)
 )
+    SQL SECURITY INVOKER
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
 -- Project files need downloading to /tmp/Project/Credit and /tmp/Project/Compute, this can be done using a bash script running as a daily cron job --
 
 -- Yesterdays values --
 DECLARE oldcredit BIGINT;
-DECLARE oldcompute BIGINT;
+DECLARE oldcompute INT;
 DECLARE oldtime BIGINT;
 DECLARE oldhumantime DATETIME;
 
 -- Full XML from the XML stats file --
 DECLARE creditxml TEXT;
+DECLARE computepath TEXT;
 DECLARE computexml TEXT;
 DECLARE unixtimexml TEXT;
 
@@ -38,7 +40,7 @@ DECLARE unixtimexpath TEXT;
 
 -- Values extracted from XML stats file --
 DECLARE credit BIGINT;
-DECLARE compute BIGINT;
+DECLARE compute INT;
 DECLARE unixtime BIGINT;
 
 -- Dates and Times converted to Human Readable --
@@ -46,7 +48,7 @@ DECLARE humandate DATE;
 DECLARE humantime DATETIME;
 
 -- Variable to hold the days credit delta --
-DECLARE dailycredit INT;
+DECLARE dailycredit BIGINT;
 
 -- Variables required for extracting data from HTML where XML is not available --
 DECLARE althtml TEXT;
@@ -64,17 +66,21 @@ SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 SET unixtimexpath = '/tables/update_time';
 SET unixtime = extractValue(unixtimexml, unixtimexpath);
 
--- Grab credit data from XML file --
+-- Grab credit data from XML file, if it fails set credit to oldcredit --
 SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
 SET creditxpath = '/tables/total_credit';
 SET credit = extractValue(creditxml, creditxpath);
+IF credit IS NULL THEN
+	SET credit = oldcredit;
+END IF;
 
--- Grab compute data from XML file, if it fails set compute to 0--
-SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
-IF (extractValue(computexml, computexpath) IS NULL)
-	THEN SET compute = '0';
-	ELSE SET compute = extractValue(computexml, computexpath);
+-- Grab compute data from XML file, if it fails set compute to 0 --
+SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET computexml = load_file(computepath);
+SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET compute = extractValue(computexml, computexpath);
+IF compute IS NULL THEN
+	SET compute = 0;
 END IF;
 
 -- Convert Unix timestamp to Human Readable --
@@ -96,40 +102,10 @@ IF project = 'amicable' THEN
 	END IF;
 END IF;
 
--- Collatz Compute (Compute is Integer Speed) --
-IF project = 'collatz' THEN
-	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET computexpath = '/server_status/database_file_states/current_integer_speed';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath);
-	END IF;
-END IF;
-
--- Einstein Compute (Compute is for CPU only) --
-IF project = 'einstein' THEN
-	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET computexpath = '/server_status/database_file_states/cpu_flops';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath);
-	END IF;
-END IF;
-
--- GPUGrid Compute (No Server Status XML, so pull from HTML) --
+-- GPUGrid Compute (No Compute Server Status XML, so pull from HTML) --
 IF project = 'gpugrid' THEN
 	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
 	SET altstartpos = (LOCATE('current GigaFLOPs', althtml)) + 26;
-	SET altendpos = LOCATE('</td>', althtml, altstartpos);
-	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
-	SET altstring = REPLACE(altstring, ',', '');
-	SET compute = CONVERT(altstring, SIGNED);
-END IF;
-
--- Mind Modelling (No Server Status XML, so pull from HTML) --
-IF project = 'mindmodelling' THEN
-	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET altstartpos = (LOCATE('Current GigaFLOPS', althtml)) + 38;
 	SET altendpos = LOCATE('</td>', althtml, altstartpos);
 	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
 	SET altstring = REPLACE(altstring, ',', '');
@@ -159,28 +135,12 @@ IF project = 'wcg' THEN
 END IF;
 
 -- Compute Speed Estimates where not provided by project (Calculate compute based on BOINC standard) --
-IF project = ('yoyo' OR 'primaboinca') THEN
+IF project = 'yoyo' THEN
 	SET compute = (credit - oldcredit)/200;
 END IF;
 
--- CPDN compute, not working unless standalone, No idea why!?! --
-IF project = ('cpdn') THEN
-	SET computexml = load_file('/tmp/Projects/Compute/cpdn');
-	SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath);
-	END IF;
-END IF;
-
--- SRBase compute, not working unless standalone, No idea why!?! --
-IF project = ('srbase') THEN
-	SET computexml = load_file('/tmp/Projects/Compute/srbase');
-	SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath);
-	END IF;
+IF project = 'primaboinca' THEN
+	SET compute = (credit - oldcredit)/200;
 END IF;
 
 -- --------------------------- --
@@ -217,6 +177,13 @@ IF humandate = CURDATE()
 				`Last Update`= oldhumantime
 		WHERE `Project ID`= project;
 END IF;
+
+#REPLACE
+#		INTO grc_listings.`Debug`
+#					(`Compute`, `Old Compute`, `computepath`, `computexml`, `computexpath`)
+#		VALUES 	(compute, oldcompute, computepath, computexml, computexpath);	
+
+
 END//
 DELIMITER ;
 
