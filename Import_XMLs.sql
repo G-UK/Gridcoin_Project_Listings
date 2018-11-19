@@ -178,12 +178,6 @@ IF humandate = CURDATE()
 		WHERE `Project ID`= project;
 END IF;
 
-#REPLACE
-#		INTO grc_listings.`Debug`
-#					(`Compute`, `Old Compute`, `computepath`, `computexml`, `computexpath`)
-#		VALUES 	(compute, oldcompute, computepath, computexml, computexpath);	
-
-
 END//
 DELIMITER ;
 

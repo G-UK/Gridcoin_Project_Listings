@@ -14,52 +14,27 @@
 -- Dumping structure for procedure grc_listings.Update_All_Listings
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_All_Listings`()
-    COMMENT 'This procedure calls the Update_Listing procedure for each proje'
 BEGIN
 
--- There is possibly a better way of doing this but I am a beginner with SQL--
+DECLARE ID VARCHAR(50) DEFAULT NULL;
+DECLARE done INT DEFAULT FALSE;
 
-CALL `Update_Listing`('acoustics');
-CALL `Update_Listing`('amicable');
-CALL `Update_Listing`('asteroids');
-CALL `Update_Listing`('cas');
-CALL `Update_Listing`('collatz');
-CALL `Update_Listing`('cosmology');
-CALL `Update_Listing`('cpdn');
-CALL `Update_Listing`('csg');
-CALL `Update_Listing`('dbn');
-CALL `Update_Listing`('denis');
-CALL `Update_Listing`('dhep');
-CALL `Update_Listing`('drugdiscovery');
-CALL `Update_Listing`('einstein');
-CALL `Update_Listing`('enigma');
-CALL `Update_Listing`('gerasim');
-CALL `Update_Listing`('goofycpu');
-CALL `Update_Listing`('gpugrid');
-CALL `Update_Listing`('lhc');
-CALL `Update_Listing`('milkyway');
-CALL `Update_Listing`('moowrap');
-CALL `Update_Listing`('nano');
-CALL `Update_Listing`('nfs');
-CALL `Update_Listing`('numberfields');
-CALL `Update_Listing`('odlk');
-CALL `Update_Listing`('odlk1');
-CALL `Update_Listing`('primaboinca');
-CALL `Update_Listing`('primegrid');
-CALL `Update_Listing`('rakesearch');
-CALL `Update_Listing`('rnaworld');
-CALL `Update_Listing`('rosetta');
-CALL `Update_Listing`('seti');
-CALL `Update_Listing`('srbase');
-CALL `Update_Listing`('tngrid');
-CALL `Update_Listing`('universe');
-CALL `Update_Listing`('vgtu');
-CALL `Update_Listing`('wcg');
-CALL `Update_Listing`('wep');
-CALL `Update_Listing`('xansons');
-CALL `Update_Listing`('yafu');
-CALL `Update_Listing`('yoyo');
+DECLARE IDCursor CURSOR FOR
+	SELECT	`Project ID`
+   FROM 		grc_listings.`Projects_Main`;
+  
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
+OPEN IDCursor;
+
+	ID_Loop:	LOOP
+		FETCH NEXT FROM IDCursor INTO ID;
+		IF done THEN
+			LEAVE ID_Loop; 
+		END IF;
+			CALL Update_Listing(ID);
+	END LOOP;
+	
 END//
 DELIMITER ;
 
