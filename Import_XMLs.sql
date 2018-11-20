@@ -15,40 +15,6 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 )
     SQL SECURITY INVOKER
     COMMENT 'This Procedure imports the XML data from the project files'
@@ -69,6 +35,7 @@ DECLARE computexml TEXT;
 DECLARE creditxpath TEXT;
 DECLARE computexpath TEXT;
 DECLARE unixtimexpath TEXT;
+DECLARE wcgtime DATETIME;
 
 #Output Variables from XML scrape
 DECLARE credit BIGINT;
@@ -149,8 +116,11 @@ END IF;
 
 #World Community Grid is non-standard (Convert "WCG Points" to "BOINC Credits" & Calculate compute based on standard BOINC credit)
 IF project = 'wcg' THEN
-	SET credit = credit/7;
-	SET compute = (credit - oldcredit)/200;	
+   SET credit = credit/7;
+   SET compute = (credit - oldcredit)/200;
+   SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+   SET wcgtime = extractValue(creditxml, unixtimexpath);
+   SET unixtime = UNIX_TIMESTAMP(wcgtime);
 END IF;
 
 #Compute speed estimates where compute speed is not provided by the project (Calculate compute based on standard BOINC credit)
