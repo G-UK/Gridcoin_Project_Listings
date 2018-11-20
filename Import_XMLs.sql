@@ -15,66 +15,101 @@
 DELIMITER //
 CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Import_XMLs`(
 	IN `project` VARCHAR(50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
     SQL SECURITY INVOKER
     COMMENT 'This Procedure imports the XML data from the project files'
 BEGIN
--- Project files need downloading to /tmp/Project/Credit and /tmp/Project/Compute, this can be done using a bash script running as a daily cron job --
 
--- Yesterdays values --
+#### Start Variables ####
+#Variables to carry yesterdays data
 DECLARE oldcredit BIGINT;
 DECLARE oldcompute INT;
 DECLARE oldtime BIGINT;
 DECLARE oldhumantime DATETIME;
 
--- Full XML from the XML stats file --
-DECLARE creditxml TEXT;
+#Input Variables for XML scrape
+DECLARE creditpath TEXT;
 DECLARE computepath TEXT;
+DECLARE creditxml TEXT;
 DECLARE computexml TEXT;
-DECLARE unixtimexml TEXT;
-
--- xPath of variables in XML stats file --
 DECLARE creditxpath TEXT;
 DECLARE computexpath TEXT;
 DECLARE unixtimexpath TEXT;
 
--- Values extracted from XML stats file --
+#Output Variables from XML scrape
 DECLARE credit BIGINT;
 DECLARE compute INT;
 DECLARE unixtime BIGINT;
 
--- Dates and Times converted to Human Readable --
+#Dates and Times converted to Human Readable
 DECLARE humandate DATE;
 DECLARE humantime DATETIME;
 
--- Variable to hold the days credit delta --
+#Variable for Project TCD (Total Credit Delta)
 DECLARE dailycredit BIGINT;
 
--- Variables required for extracting data from HTML where XML is not available --
+#Variables required for extracting data from HTML where XML is not available
 DECLARE althtml TEXT;
 DECLARE altstartpos INT;
 DECLARE altendpos INT;
 DECLARE altstring TEXT;
 
--- Create New Line for Todays Date if required --
+#### End Variables ####
+
+
+#Load yesterdays data from the table into variables
 SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 SET oldcompute = (SELECT `Project Compute Speed (GFlops)` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 SET oldtime = (SELECT `Unix Timestamp` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
--- Grab time data from XML file --
-SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
-SET unixtimexpath = '/tables/update_time';
-SET unixtime = extractValue(unixtimexml, unixtimexpath);
-
--- Grab credit data from XML file, if it fails set credit to oldcredit --
-SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
-SET creditxpath = '/tables/total_credit';
+#Grab credit data from credit XML file, if it fails set credit to equal yesterdays credit
+SET creditpath = (SELECT `Credit Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET creditxml = load_file(creditpath);
+SET creditxpath = (SELECT `Credit XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
 SET credit = extractValue(creditxml, creditxpath);
 IF credit IS NULL THEN
 	SET credit = oldcredit;
 END IF;
 
--- Grab compute data from XML file, if it fails set compute to 0 --
+#Grab time data from credit XML file
+SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET unixtime = extractValue(creditxml, unixtimexpath);
+
+#Grab compute data from XML file, if it fails set compute to 0
 SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
 SET computexml = load_file(computepath);
 SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
@@ -83,28 +118,18 @@ IF compute IS NULL THEN
 	SET compute = 0;
 END IF;
 
--- Convert Unix timestamp to Human Readable --
-SET humandate = (SELECT FROM_UNIXTIME(unixtime));
-SET humantime = (SELECT FROM_UNIXTIME(unixtime));
-SET oldhumantime = (SELECT FROM_UNIXTIME(oldtime));
-
 -- ----------------------- --
 -- Special Import Projects --
 -- ----------------------- --
 
--- Amicable Compute (Compute is in Ryzen 1700's, x200 for approx G/Flops) --
+#Amicable Compute (Compute is in Ryzen 1700's, x200 for approx G/Flops)
 IF project = 'amicable' THEN
-	SET computexml = load_file(CONCAT('/tmp/Projects/Compute/', project));
-	SET computexpath = '/server_status/database_file_states/current_floating_point_speed';
-	IF (extractValue(computexml, computexpath) IS NULL)
-		THEN SET compute = '0';
-		ELSE SET compute = extractValue(computexml, computexpath)*200;
-	END IF;
+	SET compute = compute*200;
 END IF;
 
--- GPUGrid Compute (No Compute Server Status XML, so pull from HTML) --
+#GPUGrid Compute (No Compute in Server Status XML, so pull from HTML instead)
 IF project = 'gpugrid' THEN
-	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/gpugrid'));
 	SET altstartpos = (LOCATE('current GigaFLOPs', althtml)) + 26;
 	SET altendpos = LOCATE('</td>', althtml, altstartpos);
 	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
@@ -112,9 +137,9 @@ IF project = 'gpugrid' THEN
 	SET compute = CONVERT(altstring, SIGNED);
 END IF;
 
--- Primegrid Compute (No Server Status XML, so pull from HTML) --
+#Primegrid Compute (No Server Status XML provided, so pull from HTML instead)
 IF project = 'primegrid' THEN
-	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/', project));
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/primegrid'));
 	SET altstartpos = (LOCATE('Current TeraFLOPs', althtml)) + 26;
 	SET altendpos = LOCATE('</td>', althtml, altstartpos);
 	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
@@ -122,23 +147,19 @@ IF project = 'primegrid' THEN
 	SET compute = (CONVERT(altstring, SIGNED))*1000;
 END IF;
 
--- World Community Grid Credit (Convert "Points" to "Credits" & Calculate compute based on BOINC standard) --
+#World Community Grid is non-standard (Convert "WCG Points" to "BOINC Credits" & Calculate compute based on standard BOINC credit)
 IF project = 'wcg' THEN
-	SET unixtimexml = load_file(CONCAT('/tmp/Projects/Credit/', project));
-	SET unixtimexpath = '/GlobalStatistics/LastUpdated';
-	SET humandate = extractValue(unixtimexml, unixtimexpath);
-	SET humantime = extractValue(unixtimexml, unixtimexpath);
-	SET creditxml = load_file(CONCAT('/tmp/Projects/Credit/', project));
-	SET creditxpath = '/GlobalStatistics/StatisticsTotals/Points';
-	SET credit = (extractValue(creditxml, creditxpath)/7);
+	SET credit = credit/7;
 	SET compute = (credit - oldcredit)/200;	
 END IF;
 
--- Compute Speed Estimates where not provided by project (Calculate compute based on BOINC standard) --
+#Compute speed estimates where compute speed is not provided by the project (Calculate compute based on standard BOINC credit)
+#Yoyo
 IF project = 'yoyo' THEN
 	SET compute = (credit - oldcredit)/200;
 END IF;
 
+#Primaboinca
 IF project = 'primaboinca' THEN
 	SET compute = (credit - oldcredit)/200;
 END IF;
@@ -147,24 +168,29 @@ END IF;
 -- End Special Import Projects --
 -- --------------------------- --
 
--- Calculate credit since last day. aka Daily Credit --
+#Calculate Total Credit Delta
 SET dailycredit = credit - oldcredit;
 
--- Add new line for todays date in the Project Data table --
+#Convert Unix timestamps to Human Readable
+SET humandate = (SELECT FROM_UNIXTIME(unixtime));
+SET humantime = (SELECT FROM_UNIXTIME(unixtime));
+SET oldhumantime = (SELECT FROM_UNIXTIME(oldtime));
+
+#Add new line for todays date or update existing line in the Project Data table
 IF humandate = CURDATE()
 	THEN REPLACE
 		INTO grc_listings.`Projects_Data`
 					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-		VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);	
+		VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
 	ELSE REPLACE
 		INTO grc_listings.`Projects_Data`
 					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
 		VALUES 	(project, CURDATE(), oldtime, oldcredit, oldcompute, '0');
 END IF;
 
--- Update total credit and last update on Main Project Summary table --
+#Update total credit, compute speed and last update time on Projects Main table if they have been updated today.
 IF humandate = CURDATE()
-	THEN 
+	THEN
 		UPDATE grc_listings.`Projects_Main`
 		SET 	`Project Total Credit`= credit,
 				`Project Compute Speed (GFlops)`= compute,
