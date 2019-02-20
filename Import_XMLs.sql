@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5338
+-- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -23,6 +23,7 @@ BEGIN
 #### Start Variables ####
 #Variables to carry yesterdays data
 DECLARE oldcredit BIGINT;
+DECLARE oldcredit2 BIGINT;
 DECLARE oldcompute INT;
 DECLARE oldtime BIGINT;
 DECLARE oldhumantime DATETIME;
@@ -48,6 +49,7 @@ DECLARE humantime DATETIME;
 
 #Variable for Project TCD (Total Credit Delta)
 DECLARE dailycredit BIGINT;
+DECLARE dailycredit2 BIGINT;
 
 #Variables required for extracting data from HTML where XML is not available
 DECLARE althtml TEXT;
@@ -60,6 +62,7 @@ DECLARE altstring TEXT;
 
 #Load yesterdays data from the table into variables
 SET oldcredit = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+SET oldcredit2 = (SELECT `Project Total Credit` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 2 DAY)));
 SET oldcompute = (SELECT `Project Compute Speed (GFlops)` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 SET oldtime = (SELECT `Unix Timestamp` FROM grc_listings.`Projects_Data` WHERE (`Project ID` = project) AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
@@ -67,22 +70,36 @@ SET oldtime = (SELECT `Unix Timestamp` FROM grc_listings.`Projects_Data` WHERE (
 SET creditpath = (SELECT `Credit Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
 SET creditxml = load_file(creditpath);
 SET creditxpath = (SELECT `Credit XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-SET credit = extractValue(creditxml, creditxpath);
+IF extractValue(creditxml, creditxpath) <> '' THEN
+   SET credit = extractValue(creditxml, creditxpath);
+END IF;
 IF credit IS NULL THEN
-	SET credit = oldcredit;
+   SET credit = oldcredit;
+END IF;
+IF credit = '' THEN
+   SET credit = oldcredit;
 END IF;
 
+
 #Grab time data from credit XML file
-SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-SET unixtime = extractValue(creditxml, unixtimexpath);
+IF project <> 'wcg' THEN
+   SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+   IF extractValue(creditxml, unixtimexpath) <> '' THEN
+      SET unixtime = extractValue(creditxml, unixtimexpath);
+   END IF;
+END IF;
 
 #Grab compute data from XML file, if it fails set compute to 0
-SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-SET computexml = load_file(computepath);
-SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-SET compute = extractValue(computexml, computexpath);
-IF compute IS NULL THEN
-	SET compute = 0;
+IF project <> 'gpugrid' AND project <> 'numberfields' AND project <> 'primegrid' AND project <> 'yoyo' AND project <> 'primaboinca' THEN
+   SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+   SET computexml = load_file(computepath);
+   SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+      IF  extractValue(computexml, computexpath) <> '' THEN
+         SET compute = extractValue(computexml, computexpath);
+      END IF;
+      IF compute IS NULL THEN
+	      SET compute = 0;
+      END IF;
 END IF;
 
 -- ----------------------- --
@@ -97,6 +114,16 @@ END IF;
 #GPUGrid Compute (No Compute in Server Status XML, so pull from HTML instead)
 IF project = 'gpugrid' THEN
 	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/gpugrid'));
+	SET altstartpos = (LOCATE('current GigaFLOPs', althtml)) + 26;
+	SET altendpos = LOCATE('</td>', althtml, altstartpos);
+	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
+	SET altstring = REPLACE(altstring, ',', '');
+	SET compute = CONVERT(altstring, SIGNED);
+END IF;
+
+#Numberfields Compute (No Compute in Server Status XML, so pull from HTML instead)
+IF project = 'numberfields' THEN
+	SET althtml = load_file(CONCAT('/tmp/Projects/Compute/numberfields'));
 	SET altstartpos = (LOCATE('current GigaFLOPs', althtml)) + 26;
 	SET altendpos = LOCATE('</td>', althtml, altstartpos);
 	SET altstring = SUBSTRING(althtml, altstartpos, (altendpos - altstartpos));
@@ -138,24 +165,46 @@ END IF;
 -- End Special Import Projects --
 -- --------------------------- --
 
-#Calculate Total Credit Delta
-SET dailycredit = credit - oldcredit;
-
 #Convert Unix timestamps to Human Readable
+IF (unixtime IS NULL)
+    THEN SET unixtime = oldtime;
+END IF;
+
 SET humandate = (SELECT FROM_UNIXTIME(unixtime));
 SET humantime = (SELECT FROM_UNIXTIME(unixtime));
 SET oldhumantime = (SELECT FROM_UNIXTIME(oldtime));
 
-#Add new line for todays date or update existing line in the Project Data table
+#Add or Update line for todays date if xml is for today.
 IF humandate = CURDATE()
-	THEN REPLACE
-		INTO grc_listings.`Projects_Data`
-					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-		VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
-	ELSE REPLACE
-		INTO grc_listings.`Projects_Data`
-					(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
-		VALUES 	(project, CURDATE(), oldtime, oldcredit, oldcompute, '0');
+	THEN
+		SET dailycredit = credit - oldcredit;
+		REPLACE
+			INTO grc_listings.`Projects_Data`
+						(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+			VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
+END IF;
+
+#Add or Update line for yesterdays date if xml is for yesterday.	
+IF humandate = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+	THEN
+		SET dailycredit = oldcredit - oldcredit2;
+		REPLACE
+			INTO grc_listings.`Projects_Data`
+						(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+			VALUES 	(project, CURDATE(), oldtime, oldcredit, oldcompute, '0');
+
+		REPLACE
+			INTO grc_listings.`Projects_Data`
+						(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+			VALUES 	(project, humandate, unixtime, credit, compute, dailycredit);
+END IF;
+
+IF humandate < DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+	THEN
+			REPLACE
+			INTO grc_listings.`Projects_Data`
+						(`Project ID`, `Date`, `Unix Timestamp`, `Project Total Credit`, `Project Compute Speed (GFlops)`, `Project Daily Credit`)
+			VALUES 	(project, CURDATE(), oldtime, oldcredit, oldcompute, '0');
 END IF;
 
 #Update total credit, compute speed and last update time on Projects Main table if they have been updated today.

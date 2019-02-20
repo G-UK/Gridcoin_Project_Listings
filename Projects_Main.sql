@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5338
+-- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -15,68 +15,69 @@
 CREATE TABLE IF NOT EXISTS `Projects_Main` (
   `Project ID` varchar(50) NOT NULL,
   `Project Name` text NOT NULL,
-  `HTTPS` tinytext,
-  `SSL/TLS Version` tinytext,
-  `HTTPS Providor` tinytext,
-  `Vote (In/Out)` tinytext,
+  `HTTPS` tinytext DEFAULT NULL,
+  `SSL/TLS Version` tinytext DEFAULT NULL,
+  `HTTPS Providor` tinytext DEFAULT NULL,
+  `Vote (In/Out)` tinytext DEFAULT NULL,
   `Vote (Date)` date NOT NULL,
-  `Project Total Credit` double unsigned NOT NULL,
+  `Project Total Credit` double unsigned DEFAULT NULL,
   `Project Avg Daily Credit (7 Day)` float unsigned DEFAULT NULL,
   `Project Avg Daily Credit (40 Day)` float unsigned DEFAULT NULL,
-  `Project Compute Speed (GFlops)` int(10) unsigned DEFAULT '0',
+  `Project Compute Speed (GFlops)` int(10) unsigned DEFAULT 0,
   `W.A.S (Work Availability Score)` decimal(3,2) unsigned DEFAULT NULL COMMENT 'Work Availability Score',
   `Z.C.D (Zero Credit Days)` smallint(6) unsigned DEFAULT NULL COMMENT 'Zero Credit Days',
   `Current Status` tinytext NOT NULL,
   `Project Status` tinytext NOT NULL,
   `Project Suitability` tinytext NOT NULL,
   `Last Update` datetime DEFAULT NULL,
-  `Notes` text,
+  `Notes` text DEFAULT NULL,
   KEY `Project ID` (`Project ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This Table is the main data to be presented, you should just be able to query the whole table and then drop the first (Project ID) column.';
 
--- Dumping data for table grc_listings.Projects_Main: ~40 rows (approximately)
+-- Dumping data for table grc_listings.Projects_Main: ~41 rows (approximately)
 /*!40000 ALTER TABLE `Projects_Main` DISABLE KEYS */;
-REPLACE INTO `Projects_Main` (`Project ID`, `Project Name`, `HTTPS`, `SSL/TLS Version`, `HTTPS Providor`, `Vote (In/Out)`, `Vote (Date)`, `Project Total Credit`, `Project Avg Daily Credit (7 Day)`, `Project Avg Daily Credit (40 Day)`, `Project Compute Speed (GFlops)`, `W.A.S (Work Availability Score)`, `Z.C.D (Zero Credit Days)`, `Current Status`, `Project Status`, `Project Suitability`, `Last Update`, `Notes`) VALUES
-	('acoustics', 'Acoustics@Home', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 573883379, 1900080, 1880030, 9916, 1.01, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2018-11-19 09:45:04', 'Project not TLS/SSL'),
-	('amicable', 'Amicable Numbers', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2017-02-22', 96593793282, 298874000, 261469000, 244648, 1.14, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 20:05:08', NULL),
-	('asteroids', 'Asteroids@Home', 'Yes', 'TLS1.2', 'TERENA', 'NO VOTE', '0000-00-00', 83242714293, 50050600, 55450900, 265823, 0.90, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 21:32:04', NULL),
-	('cas', 'CAS@Home', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 353724644, 3765, 1871, 21, 2.01, 9, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 22:20:23', NULL),
-	('collatz', 'Collatz Conjecture', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 1902210192052, 2913830000, 2210340000, 14474313, 1.32, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 21:52:21', NULL),
-	('cosmology', 'Cosmology@Home', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 10274852075, 1662950, 2204870, 11154, 0.75, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 18:28:36', NULL),
-	('cpdn', 'ClimatePrediction.net', 'Yes', 'TLS1.2', 'Lets Encrypt', 'Out', '2017-09-24', 37051420620, 12207300, 11791300, 138603, 1.04, 18, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 11:38:52', NULL),
-	('csg', 'Citizen Science Grid', 'Yes', 'TLS1.2', 'Globalsign', 'In', '2017-02-25', 33259568383, 26538700, 35812000, 164330, 0.74, 8, 'Whitelisted', 'Greylisted', 'Unsuitable for Rewards', '2018-11-19 12:01:24', NULL),
-	('dbn', 'DBN Upper Bound', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 4703699, 2351850, 2351850, 56, 1.00, 2, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 22:20:01', NULL),
-	('denis', 'DENIS', 'Yes', 'TLS1.2', 'TERENA', 'Out', '2017-02-23', 1323245606, 0, 0, 2, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 16:10:08', NULL),
-	('dhep', 'Distributed Hardware Evolution', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2018-09-28', 2789172396, 19187100, 22844100, 163708, 0.84, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 18:17:07', NULL),
+INSERT INTO `Projects_Main` (`Project ID`, `Project Name`, `HTTPS`, `SSL/TLS Version`, `HTTPS Providor`, `Vote (In/Out)`, `Vote (Date)`, `Project Total Credit`, `Project Avg Daily Credit (7 Day)`, `Project Avg Daily Credit (40 Day)`, `Project Compute Speed (GFlops)`, `W.A.S (Work Availability Score)`, `Z.C.D (Zero Credit Days)`, `Current Status`, `Project Status`, `Project Suitability`, `Last Update`, `Notes`) VALUES
+	('acoustics', 'Acoustics@Home', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 879483989, 7530390, 4057750, 29922, 1.86, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-02-19 20:55:05', 'Project not TLS/SSL'),
+	('amicable', 'Amicable Numbers', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2017-02-22', 114889409349, 79582100, 124531000, 90800, 0.64, 2, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 14:05:06', NULL),
+	('asteroids', 'Asteroids@Home', 'Yes', 'TLS1.2', 'TERENA', 'NO VOTE', '0000-00-00', 87658569333, 65443500, 61709500, 317078, 1.06, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-19 19:42:10', NULL),
+	('cas', 'CAS@Home', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 353958473, 1870, 2744, 20, 0.68, 6, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 11:30:21', NULL),
+	('collatz', 'Collatz Conjecture', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 2179183829764, 2459890000, 2937600000, 14742024, 0.84, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 16:17:18', NULL),
+	('cosmology', 'Cosmology@Home', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 10682708265, 4979690, 5130440, 30082, 0.97, 3, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 03:01:25', NULL),
+	('cpdn', 'ClimatePrediction.net', 'Yes', 'TLS1.2', 'Lets Encrypt', 'Out', '2017-09-24', 37930500529, 30699600, 7722240, 37737, 3.98, 20, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 11:07:19', NULL),
+	('csg', 'Citizen Science Grid', 'Yes', 'TLS1.2', 'Globalsign', 'In', '2017-02-25', 34103455093, 0, 3071250, 19744, 0.00, 9, 'Whitelisted', 'Greylisted', 'Unsuitable for Rewards', '2019-02-10 19:00:49', NULL),
+	('dbn', 'DBN Upper Bound', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 4716085, 0, 0, 0, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 17:00:02', NULL),
+	('denis', 'DENIS', 'Yes', 'TLS1.2', 'TERENA', 'Out', '2017-02-23', 1323245606, 0, 0, 2, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 16:25:07', NULL),
+	('dhep', 'Distributed Hardware Evolution', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2018-09-28', 8904724979, 55328700, 78305100, 369651, 0.71, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 12:18:15', NULL),
 	('drugdiscovery', 'Drug Discovery', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2017-09-24', 854171006, 0, 0, 0, 0.00, 21, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', '2018-08-07 22:00:05', 'Greylisted on 2018/02/19'),
-	('einstein', 'Einstein', 'Yes', 'TLS1.2', 'Thawte', 'NO VOTE', '0000-00-00', 597386572021, 0, 0, 2619284, 0.00, 21, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', '2018-06-13 13:42:27', 'Stats unavailable, awaiting stats scraper'),
-	('enigma', 'Enigma', 'No', NULL, NULL, 'In', '2017-07-26', 51124329184, 95721500, 81664000, 460200, 1.17, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 20:56:41', NULL),
-	('gerasim', 'Gerasim', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 1393924121, 1052780, 961256, 1779, 1.10, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 20:58:00', NULL),
-	('goofycpu', 'GoofyxGrid CPU', 'Yes', NULL, NULL, 'NO VOTE', '0000-00-00', 2222928028, 0, 0, 9, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 23:20:03', 'TLS Cert Error'),
-	('gpugrid', 'GPUGrid', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 744200483819, 541776000, 528130000, 2885896, 1.03, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 20:55:18', NULL),
-	('lhc', 'LHC@Home', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 13023254541, 4680070, 5088260, 27571, 0.92, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 09:08:37', NULL),
-	('milkyway', 'Milkyway', 'Yes', 'TLS1.2', 'Internet2', 'In', '2015-07-20', 384464057262, 182628000, 185192000, 902860, 0.99, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 23:12:59', NULL),
-	('mindmodelling', 'Mind Modelling', 'Yes', 'TLS1.2', 'GoDaddy', 'Out', '2016-11-22', 910759769, 52758, 1101980, 1567, 0.05, 5, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 22:11:19', NULL),
-	('moowrap', 'MooWrap', 'Yes', 'TLS1.2', 'COMODO', 'Out', '2018-02-09', 156622054207, 38362700, 41661400, 0, 0.92, 3, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 22:07:28', NULL),
-	('nfs', 'NFS', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 12335609332, 8718940, 8906240, 43614, 0.98, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 10:37:45', NULL),
-	('numberfields', 'Numberfields', 'Yes', 'TLS1.2', 'Internet2', 'NO VOTE', '0000-00-00', 9147309995, 11542700, 11992000, 62722, 0.96, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 18:23:34', NULL),
-	('odlk', 'ODLK', 'Yes', 'TLS1.2', 'Lets Encrypt', 'Out', '2017-10-05', 220717016, 501324, 408647, 2336, 1.23, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 06:35:17', NULL),
-	('odlk1', 'ODLK1', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2018-01-17', 1025568612, 2952030, 3077010, 14902, 0.96, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 06:00:24', NULL),
-	('primaboinca', 'Primaboinca', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 4770876135, 827829, 865060, 3687, 0.96, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 21:00:12', 'Compute estimated'),
-	('primegrid', 'Primegrid', 'Yes', 'TLS1.2', 'COMODO', 'Out', '2018-11-13', 802242882863, 432684000, 386141000, 2310000, 1.12, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 23:07:28', 'Project requested removal from Whitelist'),
-	('rakesearch', 'Rakesearch', 'Yes', NULL, NULL, 'NO VOTE', '0000-00-00', 2860307019, 12488800, 10522900, 60563, 1.19, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2018-11-18 04:00:04', 'TLS Cert Error'),
-	('rnaworld', 'RNA World', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 652933080, 3421, 25241, 30, 0.14, 8, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-19 23:22:05', NULL),
-	('rosetta', 'Rosetta@Home', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 73710421225, 32531700, 32538100, 162833, 1.00, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 18:30:53', NULL),
-	('seti', 'SETI@Home', 'Yes', 'TLS1.2', 'Internet2', 'NO VOTE', '0000-00-00', 0, 0, 0, 0, 0.00, 21, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 22:30:08', 'No total credit in tables.xml, No compute stats'),
-	('srbase', 'SRBase', 'No', NULL, NULL, 'In', '2016-10-28', 6843043858, 11548500, 7941100, 52265, 1.45, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 23:00:11', NULL),
-	('tngrid', 'TNGrid', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2017-03-17', 1856839867, 2918070, 2640250, 13809, 1.11, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 13:40:13', NULL),
-	('universe', 'Universe@Home', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 17145032952, 24066500, 27477000, 125000, 0.88, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-18 17:00:36', NULL),
-	('vgtu', 'VGTU', 'Yes', 'TLS1.2', 'TERENA', 'In', '2016-10-28', 1509637497, 1993580, 1899170, 9625, 1.05, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 16:10:06', NULL),
-	('wcg', 'World Community Grid', 'Yes', 'TLS1.2', 'Thawte', 'NO VOTE', '0000-00-00', 322078691332, 163431000, 159807000, 845378, 1.02, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 12:06:02', NULL),
-	('wep', 'WEP M+2', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 0, 0, 0, 1856, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-18 06:25:02', 'No total credit in tables.xml, No compute stats'),
-	('xansons', 'XANSONS4COD', 'Yes', 'TLS1.2', 'Starfields', 'Out', '2017-09-24', 3974131615, 780039, 447678, 0, 1.74, 13, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2018-11-15 10:25:04', NULL),
-	('yafu', 'YAFU', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2015-09-20', 2816244435, 2708810, 2459450, 13108, 1.10, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 23:10:53', NULL),
-	('yoyo', 'Yoyo', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 8871926901, 6870580, 5769210, 32411, 1.19, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2018-11-19 23:05:50', 'Compute estimated');
+	('einstein', 'Einstein', 'Yes', 'TLS1.2', 'Thawte', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, 0, NULL, 0, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', '2019-02-20 16:18:42', 'Stats are not publically available. Listing is Manually set'),
+	('enigma', 'Enigma', 'No', NULL, NULL, 'In', '2017-07-26', 60512435379, 83328800, 103724000, 518902, 0.80, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 16:18:42', NULL),
+	('gerasim', 'Gerasim', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 1543792682, 1305980, 1728960, 2554, 0.76, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 16:58:00', NULL),
+	('goofycpu', 'GoofyxGrid CPU', 'Yes', NULL, NULL, 'NO VOTE', '0000-00-00', 2227858154, 0, 0, 0, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-01-04 14:03:20', 'TLS Cert Error'),
+	('gpugrid', 'GPUGrid', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 807907336451, 760093000, 614546000, 3539566, 1.24, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 14:25:19', NULL),
+	('lhc', 'LHC@Home', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 14719753332, 11794100, 15707000, 60544, 0.75, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 09:33:02', NULL),
+	('milkyway', 'Milkyway', 'Yes', 'TLS1.2', 'Internet2', 'In', '2015-07-20', 403059648152, 175207000, 196391000, 1036711, 0.89, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 08:22:29', NULL),
+	('mindmodelling', 'Mind Modelling', 'Yes', 'TLS1.2', 'GoDaddy', 'Out', '2016-11-22', 912210023, 0, 0, 11, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 17:11:21', NULL),
+	('moowrap', 'MooWrap', 'Yes', 'TLS1.2', 'COMODO', 'Out', '2018-02-09', 162546105188, 68452800, 71941500, 369424, 0.95, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-02-20 16:05:55', NULL),
+	('nfs', 'NFS', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 13080625706, 10515800, 8923700, 50345, 1.18, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 08:13:59', NULL),
+	('numberfields', 'Numberfields', 'Yes', 'TLS1.2', 'Internet2', 'NO VOTE', '0000-00-00', 10392683881, 8359820, 10362400, 44397, 0.81, 2, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 05:55:29', NULL),
+	('odlk', 'ODLK', 'Yes', 'TLS1.2', 'Lets Encrypt', 'Out', '2017-10-05', 276571130, 643549, 784565, 3152, 0.82, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 08:20:20', NULL),
+	('odlk1', 'ODLK1', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2018-01-17', 1300329978, 3071940, 3070440, 15620, 1.00, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 06:47:39', NULL),
+	('primaboinca', 'Primaboinca', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', 4856570935, 797771, 857220, 0, 0.93, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-19 21:00:15', 'Compute estimated'),
+	('primegrid', 'Primegrid', 'Yes', 'TLS1.2', 'COMODO', 'Out', '2018-11-13', 837264371794, 380352000, 358527000, 2182000, 1.06, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 14:24:29', 'Project requested removal from Whitelist'),
+	('rakesearch', 'Rakesearch', 'Yes', NULL, NULL, 'NO VOTE', '0000-00-00', 3950995298, 24302500, 14864200, 110920, 1.63, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-02-20 04:35:05', NULL),
+	('rnaworld', 'RNA World', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 654546914, 23950, 23397, 21, 1.02, 11, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 16:12:06', NULL),
+	('rosetta', 'Rosetta@Home', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 76338872186, 32219500, 30356800, 155542, 1.06, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-19 21:14:01', NULL),
+	('seti', 'SETI@Home', 'Yes', 'TLS1.2', 'Internet2', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, 0, NULL, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', NULL, 'No total credit in tables.xml, No compute stats.  Listing is Manually set'),
+	('srbase', 'SRBase', 'No', NULL, NULL, 'In', '2016-10-28', 7525974363, 6332210, 3446020, 23108, 1.84, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 16:15:15', NULL),
+	('tngrid', 'TNGrid', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2017-03-17', 2120032172, 2868640, 2991940, 14732, 0.96, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 12:35:35', NULL),
+	('universe', 'Universe@Home', 'Yes', 'TLS1.2', 'Lets Encrypt', 'NO VOTE', '0000-00-00', 24056001582, 73171500, 99249900, 493792, 0.74, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 17:02:31', NULL),
+	('vgtu', 'VGTU', 'Yes', 'TLS1.2', 'TERENA', 'In', '2016-10-28', 1575240973, 0, 471, 34, 0.00, 19, 'Whitelisted', 'Greylisted', 'Unsuitable for Rewards', '2019-02-20 17:00:02', NULL),
+	('wcg', 'World Community Grid', 'Yes', 'TLS1.2', 'Thawte', 'NO VOTE', '0000-00-00', 337260727138, 156287000, 0, 730328, 0.00, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 12:06:02', NULL),
+	('wep', 'WEP M+2', 'No', NULL, NULL, 'NO VOTE', '0000-00-00', NULL, NULL, NULL, 0, NULL, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', NULL, 'No total credit in tables.xml, No compute stats.  Listing is Manually set'),
+	('xansons', 'XANSONS4COD', 'Yes', 'TLS1.2', 'Starfields', 'Out', '2017-09-24', 4010079076, 1091130, 507663, 3462, 2.15, 14, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-20 15:00:03', NULL),
+	('yafu', 'YAFU', 'Yes', 'TLS1.2', 'Lets Encrypt', 'In', '2015-09-20', 3123496310, 1847380, 2706080, 12406, 0.68, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 17:45:18', NULL),
+	('yoyo', 'Yoyo', 'Yes', 'TLS1.2', 'COMODO', 'NO VOTE', '0000-00-00', 9599634585, 5892810, 7432910, 22246, 0.79, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-02-20 17:10:50', 'Compute estimated'),
+	('nano', 'NanoHub', 'Yes', NULL, NULL, 'NO VOTE', '0000-00-00', 1743480, 1405, 14693, 61, 0.10, 3, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-02-19 23:40:04', NULL);
 /*!40000 ALTER TABLE `Projects_Main` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

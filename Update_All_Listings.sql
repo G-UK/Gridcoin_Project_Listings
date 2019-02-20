@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5338
+-- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;

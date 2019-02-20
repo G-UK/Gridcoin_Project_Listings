@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.1.37-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             9.5.0.5338
+-- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -23,6 +23,7 @@ DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
 DECLARE vote TINYTEXT;
 DECLARE compute BIGINT;
+DECLARE oldcompute BIGINT;
 DECLARE currentstatus TINYTEXT;
 
 -- Values to be calculated --
@@ -45,6 +46,11 @@ SET compute = (SELECT `Project Compute Speed (GFlops)`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
 
+SET oldcompute = (SELECT `Project Compute Speed (GFlops)`
+    FROM grc_listings.`Projects_Data`
+    WHERE `Project ID`= project
+    AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
+
 SET currentstatus = (SELECT `Current Status`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
@@ -63,10 +69,13 @@ ELSEIF ((was < '0.1') OR (zcd > '7') OR (vote != 'Out')) AND
 
 ELSE SET
     listing = 'Unlisted';
-
 END IF;
 
 -- Calculate "Suitability" category --
+IF (compute = '0') AND (oldcompute != '0')
+    THEN SET compute = oldcompute;
+END IF;
+
 IF  
     (was >= '0.1') AND
     (zcd <= '7') AND
@@ -96,6 +105,13 @@ IF (project = 'primegrid')
     THEN SET
         listing = 'Unlisted',
         suitability = 'Unsuitable for Rewards';
+END IF;
+
+
+IF (project = 'wcg')
+    THEN SET
+        listing = 'Whitelisted',
+        suitability = 'Suitable for Rewards';
 END IF;
 
 -- Update main Project Summary --
