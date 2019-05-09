@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
+-- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
@@ -22,8 +22,7 @@ BEGIN
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
 DECLARE vote TINYTEXT;
-DECLARE compute BIGINT;
-DECLARE oldcompute BIGINT;
+DECLARE cas BIGINT;
 DECLARE currentstatus TINYTEXT;
 
 -- Values to be calculated --
@@ -42,14 +41,9 @@ SET vote = (SELECT `Vote (In/Out)`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
 
-SET compute = (SELECT `Project Compute Speed (GFlops)`
+SET cas = (SELECT `Compute Availability`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
-
-SET oldcompute = (SELECT `Project Compute Speed (GFlops)`
-    FROM grc_listings.`Projects_Data`
-    WHERE `Project ID`= project
-    AND (`Date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)));
 
 SET currentstatus = (SELECT `Current Status`
     FROM grc_listings.`Projects_Main`
@@ -72,20 +66,16 @@ ELSE SET
 END IF;
 
 -- Calculate "Suitability" category --
-IF (compute = '0') AND (oldcompute != '0')
-    THEN SET compute = oldcompute;
-END IF;
-
 IF  
     (was >= '0.1') AND
     (zcd <= '7') AND
-    (compute >= '5000')
+    (cas >= '10')
     THEN SET suitability = 'Suitable for Rewards';
 
 ELSEIF
     (was < '0.1') OR
     (zcd > '7') OR
-    (compute < '5000')
+    (cas < '10')
     THEN SET suitability = 'Unsuitable for Rewards';
 
 ELSE SET suitability = 'Unsuitable for Rewards';

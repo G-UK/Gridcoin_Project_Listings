@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
+-- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------

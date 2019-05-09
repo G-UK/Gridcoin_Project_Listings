@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.12-MariaDB-2 - Debian buildd-unstable
+-- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Version:             10.1.0.5479
 -- --------------------------------------------------------
@@ -28,11 +28,14 @@ DECLARE fourtyday DATE;
 -- Average Daily Credit over period --
 DECLARE sevenavg BIGINT;
 DECLARE fourtyavg BIGINT;
+DECLARE compute INT;
+DECLARE users INT;
+DECLARE workunits INT;
 
 -- Calculated Values --
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
-DECLARE compute BIGINT;
+DECLARE cas INT;
 
 -- Set Dates relative to the current date --
 SET today = DATE_SUB(CURDATE(), INTERVAL 1 DAY);
@@ -60,11 +63,30 @@ END IF;
 SET zcd = (SELECT COUNT(`Project Daily Credit`)
 	FROM grc_listings.`Projects_Data`
 	WHERE (`Date`>= twentyday) AND (`Date`<= today) AND (`Project ID`= project) AND (`Project Daily Credit`= '0'));
+	
+-- Calculate Compute Availability --
+SET compute = (SELECT `Project Compute Speed (GFlops)`
+    FROM grc_listings.`Projects_Main`
+    WHERE `Project ID`= project);
+    
+SET users = (SELECT `Active Users`
+    FROM grc_listings.`Projects_Main`
+    WHERE `Project ID`= project);
+    
+SET workunits = (SELECT `Workunit Queue`
+    FROM grc_listings.`Projects_Main`
+    WHERE `Project ID`= project);
+
+IF users = '0'
+    THEN SET cas = '0';
+    ELSE SET cas = (compute / users) + (workunits / '100');
+END IF;
 
 -- Update main Project Summary --
 UPDATE 	grc_listings.`Projects_Main`
 	SET 	`Project Avg Daily Credit (7 Day)`= sevenavg,
 			`Project Avg Daily Credit (40 Day)`= fourtyavg,
+			`Compute Availability`= cas,
 			`W.A.S (Work Availability Score)`= was,
 			`Z.C.D (Zero Credit Days)`= zcd
 	WHERE `Project ID`= project;
