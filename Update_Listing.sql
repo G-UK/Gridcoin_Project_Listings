@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.1.0.5479
+-- HeidiSQL Version:             10.3.0.5771
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -13,7 +13,7 @@
 
 -- Dumping structure for procedure grc_listings.Update_Listing
 DELIMITER //
-CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Listing`(
+CREATE PROCEDURE `Update_Listing`(
 	IN `project` VARCHAR(250)
 )
 BEGIN
@@ -84,21 +84,28 @@ END IF;
 
 -- Enter Project Overrides Here (Used for projects not exporting stats through tables.xml) --
 -- SETI doesn't export stats in the files we collect but they are a big project with consistant work over many years --
-
 IF (project = 'seti')
     THEN SET
         listing = 'Whitelisted',
         suitability = 'Suitable for Rewards';
 END IF;
 
+-- WCG has customised stats in the files we collect but they are a big project with consistant work over many years --
+IF (project = 'wcg')
+    THEN SET
+        listing = 'Whitelisted',
+        suitability = 'Suitable for Rewards';
+END IF;
+
+-- Primegrid Requested removal --
 IF (project = 'primegrid')
     THEN SET
         listing = 'Unlisted',
         suitability = 'Unsuitable for Rewards';
 END IF;
 
-
-IF (project = 'wcg')
+-- Einstein stats only available to scrapers --
+IF (project = 'einstein')
     THEN SET
         listing = 'Whitelisted',
         suitability = 'Suitable for Rewards';

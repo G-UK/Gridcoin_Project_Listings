@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.1.0.5479
+-- HeidiSQL Version:             10.3.0.5771
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -35,50 +35,42 @@ CREATE TABLE IF NOT EXISTS `Projects_Main` (
   KEY `Project ID` (`Project ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This Table is the main data to be presented, you should just be able to query the whole table and then drop the first (Project ID) column.';
 
--- Dumping data for table grc_listings.Projects_Main: ~41 rows (approximately)
+-- Dumping data for table grc_listings.Projects_Main: ~33 rows (approximately)
 /*!40000 ALTER TABLE `Projects_Main` DISABLE KEYS */;
 INSERT INTO `Projects_Main` (`Project ID`, `Project Name`, `HTTPS`, `Vote (In/Out)`, `Vote (Date)`, `Project Total Credit`, `Project Avg Daily Credit (7 Day)`, `Project Avg Daily Credit (40 Day)`, `Project Compute Speed (GFlops)`, `Active Users`, `Workunit Queue`, `Compute Availability`, `W.A.S (Work Availability Score)`, `Z.C.D (Zero Credit Days)`, `Current Status`, `Project Status`, `Project Suitability`, `Last Update`, `Notes`) VALUES
-	('acoustics', 'Acoustics@Home', 'No', 'NO VOTE', '0000-00-00', 0, 0, 621095, 0, 10000, 0, 0, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '1970-01-01 01:00:00', NULL),
-	('amicable', 'Amicable Numbers', 'Yes', 'In', '2017-02-22', 122218260079, 78595700, 85234800, 70400, 1593, 1697, 61, 0.92, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 09:05:04', NULL),
-	('asteroids', 'Asteroids@Home', 'Yes', 'NO VOTE', '0000-00-00', 91467247413, 48807300, 41740900, 237758, 12976, 132042, 1339, 1.17, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 10:32:10', NULL),
-	('cas', 'CAS@Home', 'No', 'NO VOTE', '0000-00-00', 353984835, 5, 1, 7, 1, 0, 7, 5.00, 17, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 01:40:25', NULL),
-	('collatz', 'Collatz Conjecture', 'Yes', 'NO VOTE', '0000-00-00', 2411229122547, 3443250000, 2767790000, 15201663, 2665, 760, 5712, 1.24, 3, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 06:22:25', NULL),
-	('cosmology', 'Cosmology@Home', 'Yes', 'NO VOTE', '0000-00-00', 11106990963, 4995090, 5077050, 25165, 5445, 998, 15, 0.98, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 09:46:10', NULL),
-	('cpdn', 'ClimatePrediction.net', 'Yes', 'Out', '2017-09-24', 38890518163, 16635500, 13426900, 82433, 8834, 16606, 175, 1.24, 16, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-08 13:56:54', 'Project only periodically updates stats'),
-	('csg', 'Citizen Science Grid', 'Yes', 'In', '2017-02-25', 34237843186, 441070, 745206, 2604, 994, 0, 3, 0.59, 1, 'Whitelisted', 'Whitelisted', 'Unsuitable for Rewards', '2019-05-08 20:00:57', NULL),
-	('dbn', 'DBN Upper Bound', 'No', 'NO VOTE', '0000-00-00', 4716085, 0, 0, 0, 10000, 0, 0, 0.00, 18, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 09:15:02', NULL),
-	('denis', 'DENIS', 'Yes', 'Out', '2017-02-23', 1323245606, 0, 0, 2, 10000, 0, 0, 0.00, 19, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-08 17:55:08', NULL),
-	('dhep', 'Distributed Hardware Evolution', 'Yes', 'In', '2018-09-28', 19464742589, 133215000, 146452000, 1841786, 1632, 4928, 1178, 0.91, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 11:30:03', NULL),
-	('drugdiscovery', 'Drug Discovery', 'Yes', 'In', '2017-09-24', NULL, NULL, 0, NULL, NULL, NULL, NULL, 0.00, 2, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', NULL, 'Greylisted on 2018/02/19'),
-	('einstein', 'Einstein', 'Yes', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', NULL, 'Stats are not publically available. Listing is Manually set'),
-	('enigma', 'Enigma', 'No', 'In', '2017-07-26', 67513137391, 62229200, 84741300, 413888, 432, 5201, 1010, 0.73, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 08:20:40', NULL),
-	('gerasim', 'Gerasim', 'No', 'NO VOTE', '0000-00-00', 1688678055, 1228560, 1733400, 1739, 321, 1172219, 11728, 0.71, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-05-09 09:58:00', NULL),
-	('goofycpu', 'GoofyxGrid CPU', 'Yes', 'NO VOTE', '0000-00-00', 2227858154, 0, 0, 0, 10000, 0, 0, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-01-04 14:03:20', 'TLS Cert Error'),
-	('gpugrid', 'GPUGrid', 'Yes', 'NO VOTE', '0000-00-00', 863753396027, 654172000, 663449000, 3438886, 3946, 2399, 895, 0.99, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 08:30:19', NULL),
-	('lhc', 'LHC@Home', 'Yes', 'NO VOTE', '0000-00-00', 16165634336, 16337300, 16787700, 90118, 7082, 1099387, 11007, 0.97, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 09:43:41', NULL),
-	('milkyway', 'Milkyway', 'Yes', 'In', '2015-07-20', 416354713378, 178259000, 179293000, 887053, 14507, 11453, 176, 0.99, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-08 18:52:18', NULL),
-	('mindmodelling', 'Mind Modelling', 'Yes', 'Out', '2016-11-22', 912210023, 0, 0, 10, 10000, 0, 0, 0.00, 18, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 11:11:21', NULL),
-	('moowrap', 'MooWrap', 'Yes', 'Out', '2018-02-09', 168736493519, 59617800, 71565000, 323836, 2048, 2835, 186, 0.83, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-05-09 10:07:13', NULL),
-	('nfs', 'NFS', 'Yes', 'NO VOTE', '0000-00-00', 13865297002, 11579700, 8611300, 57881, 1510, 2657992, 26618, 1.34, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 09:16:16', NULL),
-	('numberfields', 'Numberfields', 'Yes', 'NO VOTE', '0000-00-00', 13514114800, 4490890, 45541400, 139437, 1347, 181506, 1919, 0.10, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-08 15:55:48', NULL),
-	('odlk', 'ODLK', 'Yes', 'Out', '2017-10-05', 315709049, 322119, 547194, 2032, 392, 421079, 4216, 0.59, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-05-08 13:10:23', NULL),
-	('odlk1', 'ODLK1', 'Yes', 'In', '2018-01-17', 1519465780, 2328530, 2620010, 12259, 488, 100271, 1028, 0.89, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 08:10:29', NULL),
-	('primaboinca', 'Primaboinca', 'No', 'NO VOTE', '0000-00-00', 4935360135, 891143, 1091560, 0, 500, 0, 0, 0.82, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-08 21:00:21', 'Compute estimated, Project users manually set to 500'),
-	('primegrid', 'Primegrid', 'Yes', 'Out', '2018-11-13', 870027989872, 297448000, 426979000, 2477000, 6192, 53296, 933, 0.70, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 08:26:44', 'Project requested removal from Whitelist'),
-	('rakesearch', 'Rakesearch', 'Yes', 'NO VOTE', '0000-00-00', 6218854512, 20172300, 31827400, 130269, 676, 19656, 389, 0.63, 2, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2019-05-08 23:40:06', NULL),
-	('rnaworld', 'RNA World', 'Yes', 'NO VOTE', '0000-00-00', 656433137, 4096, 15287, 8, 30, 0, 0, 0.27, 7, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 10:17:05', NULL),
-	('rosetta', 'Rosetta@Home', 'Yes', 'NO VOTE', '0000-00-00', 78748629348, 29073100, 29352500, 150049, 24250, 23061, 237, 0.99, 2, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-08 22:36:51', NULL),
+	('amicable', 'Amicable Numbers', 'Yes', 'In', '2017-02-22', 153718572002, 119003000, 157889000, 145800, 1909, 2269, 99, 0.75, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-26 14:05:07', NULL),
+	('asteroids', 'Asteroids@Home', 'Yes', 'NO VOTE', '0000-00-00', 106879787733, 73797100, 65215200, 361508, 13099, 0, 28, 1.13, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-26 15:02:22', NULL),
+	('cas', 'CAS@Home', 'No', 'NO VOTE', '0000-00-00', 355788015, 1672, 1740, 15, 38, 0, 0, 0.96, 3, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-26 15:00:32', NULL),
+	('collatz', 'Collatz Conjecture', 'Yes', 'NO VOTE', '0000-00-00', 3397169831301, 3654670000, 3953490000, 18946606, 2792, 798, 6794, 0.92, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-26 14:32:38', NULL),
+	('cosmology', 'Cosmology@Home', 'Yes', 'NO VOTE', '0000-00-00', 12467740147, 5990430, 5767400, 28858, 5510, 991, 15, 1.04, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-26 16:36:44', NULL),
+	('cpdn', 'ClimatePrediction.net', 'Yes', 'Out', '2017-09-24', 41383584243, 4952780, 11495500, 37954, 7354, 1316, 18, 0.43, 16, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-25 19:30:44', 'Project only periodically updates stats'),
+	('csg', 'Citizen Science Grid', 'Yes', 'Out', '2019-05-29', 34276761962, 0, 9059, 59, 13, 0, 5, 0.00, 20, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-26 15:35:51', NULL),
+	('einstein', 'Einstein', 'Yes', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', NULL, 'Stats only available to official network. Listing Manually set'),
+	('gerasim', 'Gerasim', 'No', 'NO VOTE', '0000-00-00', 2135405194, 1649920, 1604960, 3039, 415, 6797300, 67980, 1.03, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2020-02-26 16:58:00', NULL),
+	('gpugrid', 'GPUGrid', 'Yes', 'NO VOTE', '0000-00-00', 951762669795, 418673000, 282497000, 1807902, 3491, 310143, 3619, 1.48, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 11:30:39', NULL),
+	('lhc', 'LHC@Home', 'Yes', 'NO VOTE', '0000-00-00', 22684489549, 9876970, 11190300, 58164, 9521, 3615, 42, 0.88, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 11:18:58', NULL),
+	('milkyway', 'Milkyway', 'Yes', 'In', '2015-07-20', 479216602719, 268858000, 292128000, 1398536, 14315, 10661, 204, 0.92, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-24 19:02:22', NULL),
+	('moowrap', 'MooWrap', 'Yes', 'Out', '2018-02-09', 193314538844, 56468000, 100457000, 411423, 1892, 2883, 246, 0.56, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2020-02-25 16:37:59', NULL),
+	('nfs', 'NFS', 'Yes', 'NO VOTE', '0000-00-00', 16428970368, 7220740, 8015430, 41270, 1299, 3329928, 33331, 0.90, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 13:38:26', NULL),
+	('numberfields', 'Numberfields', 'Yes', 'NO VOTE', '0000-00-00', 13973681253, 4456040, 5092710, 173568, 1122, 98548, 1140, 0.87, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 05:38:23', NULL),
+	('odlk', 'ODLK', 'Yes', 'Out', '2017-10-05', 493307417, 469575, 764466, 3206, 402, 335403, 3362, 0.61, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2020-02-25 10:05:23', NULL),
+	('odlk1', 'ODLK1', 'Yes', 'In', '2018-01-17', 2195884567, 2339960, 2295480, 13093, 487, 51723, 544, 1.02, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 08:10:50', NULL),
+	('primaboinca', 'Primaboinca', 'No', 'NO VOTE', '0000-00-00', 5227403535, 1154830, 1227620, 0, 500, 0, 0, 0.94, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-24 21:00:20', 'Compute estimated, Project users manually set to 500'),
+	('primegrid', 'Primegrid', 'Yes', 'Out', '2018-11-13', 982199774698, 321025000, 424236000, 1958000, 4260, 56827, 1028, 0.76, 1, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-25 17:44:23', 'Project requested removal from Whitelist'),
+	('rakesearch', 'Rakesearch', 'Yes', 'NO VOTE', '0000-00-00', 7184947776, 1256280, 1398490, 7250, 534, 2800, 42, 0.90, 1, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2020-02-25 08:00:05', NULL),
+	('rnaworld', 'RNA World', 'Yes', 'NO VOTE', '0000-00-00', 659370598, 1275, 2114, 3, 5, 0, 1, 0.60, 13, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2020-02-25 16:27:05', NULL),
+	('rosetta', 'Rosetta@Home', 'Yes', 'NO VOTE', '0000-00-00', 88000709475, 29851000, 29838300, 158151, 24201, 23053, 237, 1.00, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-24 21:02:00', NULL),
 	('seti', 'SETI@Home', 'Yes', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', NULL, 'No total credit in tables.xml, No compute stats.  Listing is Manually set'),
-	('srbase', 'SRBase', 'No', 'In', '2016-10-28', 8149499765, 9244690, 7248330, 42830, 434, 79416, 893, 1.28, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 11:45:14', NULL),
-	('tngrid', 'TNGrid', 'Yes', 'In', '2017-03-17', 2370776633, 2247630, 2857320, 14055, 614, 6961, 93, 0.79, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 04:10:38', NULL),
-	('universe', 'Universe@Home', 'Yes', 'NO VOTE', '0000-00-00', 31435403677, 81079700, 79047700, 452707, 7015, 323026, 3295, 1.03, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 12:02:41', NULL),
-	('vgtu', 'VGTU', 'Yes', 'In', '2016-10-28', 1575240973, 0, 0, 1, 1, 0, 1, 0.00, 18, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', '2019-05-09 06:45:02', NULL),
-	('wcg', 'World Community Grid', 'Yes', 'NO VOTE', '0000-00-00', 349322804578, 165734000, 8133590000, 419652, 10000, 0, 42, 0.02, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 00:06:02', 'No active User data (Users set to 10,000)'),
+	('srbase', 'SRBase', 'No', 'In', '2016-10-28', 9800391058, 5957620, 6239380, 7299, 374, 77864, 219, 0.95, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-25 17:20:13', NULL),
+	('tngrid', 'TNGrid', 'Yes', 'In', '2017-03-17', 3187525712, 3187540, 3000270, 15836, 576, 11161, 139, 1.06, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-22 11:05:40', NULL),
+	('universe', 'Universe@Home', 'Yes', 'NO VOTE', '0000-00-00', 52817451890, 129314000, 94420100, 528466, 6781, 244556, 2523, 1.37, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-22 18:00:17', NULL),
+	('vgtu', 'VGTU', 'Yes', 'In', '2016-10-28', 1575240973, 0, 0, 1, 10000, 0, 0, 0.00, 15, 'Greylisted', 'Greylisted', 'Unsuitable for Rewards', '2020-02-22 11:40:03', NULL),
+	('wcg', 'World Community Grid', 'Yes', 'NO VOTE', '0000-00-00', 390092467717, 146471000, 144549000, 737561, 10000, 0, 74, 1.01, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-22 12:06:03', 'No active User data (Users set to 10,000)'),
 	('wep', 'WEP M+2', 'No', 'NO VOTE', '0000-00-00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', NULL, 'No total credit in tables.xml, No compute stats.  Listing is Manually set'),
-	('xansons', 'XANSONS4COD', 'Yes', 'Out', '2017-09-24', 4033365069, 932, 355648, 1076, 126, 0, 9, 0.00, 12, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-08 20:50:03', NULL),
-	('yafu', 'YAFU', 'Yes', 'In', '2015-09-20', 3356434924, 3277600, 3231540, 16544, 311, 1465, 68, 1.01, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 11:30:31', NULL),
-	('yoyo', 'Yoyo', 'Yes', 'NO VOTE', '0000-00-00', 10093202594, 7804350, 6120790, 43008, 3000, 25454, 269, 1.28, 1, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2019-05-09 11:10:48', 'No active User data (Users set to 5,000)'),
-	('nano', 'NanoHub', 'Yes', 'NO VOTE', '0000-00-00', 3594840, 19, 37984, 119, 180, 1, 1, 0.00, 6, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-05-09 02:20:03', NULL);
+	('yafu', 'YAFU', 'Yes', 'In', '2015-09-20', 4064410114, 2047000, 2197030, 11236, 314, 667, 42, 0.93, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-22 17:45:35', NULL),
+	('yoyo', 'Yoyo', 'Yes', 'NO VOTE', '0000-00-00', 11720428056, 6129480, 5852510, 21871, 3000, 3153, 39, 1.05, 0, 'Whitelisted', 'Whitelisted', 'Suitable for Rewards', '2020-02-22 17:45:48', 'No active User data (Users set to 5,000)'),
+	('nano', 'NanoHub', 'Yes', 'NO VOTE', '0000-00-00', 18730259, 0, 0, 223, 269, 4465, 45, 0.00, 21, 'Unlisted', 'Unlisted', 'Unsuitable for Rewards', '2019-12-15 06:30:04', NULL),
+	('quchem', 'QuChemPedi', 'Yes', 'NO VOTE', '0000-00-00', 144718853, 4260970, 2080680, 3180, 207, 275140, 2767, 2.05, 0, 'Unlisted', 'Unlisted', 'Suitable for Rewards', '2020-02-24 23:30:07', 'Initial Stats Gathering');
 /*!40000 ALTER TABLE `Projects_Main` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

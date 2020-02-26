@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.14-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.1.0.5479
+-- HeidiSQL Version:             10.3.0.5771
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -13,7 +13,7 @@
 
 -- Dumping structure for procedure grc_listings.Update_Maths
 DELIMITER //
-CREATE DEFINER=`g`@`192.168.0.3` PROCEDURE `Update_Maths`(
+CREATE PROCEDURE `Update_Maths`(
 	IN `project` VARCHAR(255)
 )
     COMMENT 'This procedure calculates the project stats needed for calculati'
