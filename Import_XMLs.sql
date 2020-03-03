@@ -186,28 +186,40 @@ END IF;
 #World Community Grid is non-standard (Convert "WCG Points" to "BOINC Credits" & Calculate compute based on standard BOINC credit)
 IF project = 'wcg' THEN
    SET credit = credit/7;
-   SET compute = (credit - oldcredit)/200;
+   	IF (credit - oldcredit) = '0' THEN
+			SET compute = (oldcredit - oldcredit2)/200;
+		ELSE
+			SET compute = (credit - oldcredit)/200;
+		END IF;
    SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
    SET wcgtime = extractValue(creditxml, unixtimexpath);
    SET unixtime = UNIX_TIMESTAMP(wcgtime);
-   SET users = '10000';
-   SET oldusers = '10000';
+   SET users = '40000';
+   SET oldusers = '40000';
    SET workunits = '0';
 END IF;
 
 #Compute speed estimates where compute speed is not provided by the project (Calculate compute based on standard BOINC credit)
 #Yoyo
 IF project = 'yoyo' THEN
-	SET compute = (credit - oldcredit)/200;
-	SET users = '3000';
-	SET oldusers = '3000';
+	IF (credit - oldcredit) = '0' THEN
+		SET compute = (oldcredit - oldcredit2)/200;
+	ELSE
+		SET compute = (credit - oldcredit)/200;
+	END IF;
+	SET users = '2500';
+	SET oldusers = '2500';
 END IF;
 
 #Primaboinca doesn't provide any data so estimate compute, users and workunits
 IF project = 'primaboinca' THEN
-	SET compute = (credit - oldcredit)/200;
-   SET users = '500';
-   SET oldusers = '500';
+	IF (credit - oldcredit) = '0' THEN
+		SET compute = (oldcredit - oldcredit2)/200;
+	ELSE
+		SET compute = (credit - oldcredit)/200;
+	END IF;
+   SET users = '275';
+   SET oldusers = '275';
    SET workunits = '0';
 END IF;
 

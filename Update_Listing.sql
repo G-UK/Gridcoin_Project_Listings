@@ -90,13 +90,6 @@ IF (project = 'seti')
         suitability = 'Suitable for Rewards';
 END IF;
 
--- WCG has customised stats in the files we collect but they are a big project with consistant work over many years --
-IF (project = 'wcg')
-    THEN SET
-        listing = 'Whitelisted',
-        suitability = 'Suitable for Rewards';
-END IF;
-
 -- Primegrid Requested removal --
 IF (project = 'primegrid')
     THEN SET
