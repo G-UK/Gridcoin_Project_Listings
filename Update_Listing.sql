@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.5.8-MariaDB-3 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.3.0.5771
+-- HeidiSQL Version:             11.1.0.6116
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,6 +10,7 @@
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Dumping structure for procedure grc_listings.Update_Listing
 DELIMITER //
@@ -22,7 +23,8 @@ BEGIN
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
 DECLARE vote TINYTEXT;
-DECLARE cas BIGINT;
+DECLARE compute INT;
+DECLARE users INT;
 DECLARE currentstatus TINYTEXT;
 
 -- Values to be calculated --
@@ -40,8 +42,12 @@ SET zcd = (SELECT `Z.C.D (Zero Credit Days)`
 SET vote = (SELECT `Vote (In/Out)`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
-
-SET cas = (SELECT `Compute Availability`
+    
+SET compute = (SELECT `Project Compute Speed (GFlops)`
+    FROM grc_listings.`Projects_Main`
+    WHERE `Project ID`= project);
+    
+SET users = (SELECT `Active Users`
     FROM grc_listings.`Projects_Main`
     WHERE `Project ID`= project);
 
@@ -69,13 +75,15 @@ END IF;
 IF  
     (was >= '0.1') AND
     (zcd <= '7') AND
-    (cas >= '10')
+    (users >= '200') AND
+    (compute >= '1000')
     THEN SET suitability = 'Suitable for Rewards';
 
 ELSEIF
     (was < '0.1') OR
     (zcd > '7') OR
-    (cas < '10')
+    (users < '200') OR
+    (compute < '1000')
     THEN SET suitability = 'Unsuitable for Rewards';
 
 ELSE SET suitability = 'Unsuitable for Rewards';
@@ -83,13 +91,6 @@ ELSE SET suitability = 'Unsuitable for Rewards';
 END IF;
 
 -- Enter Project Overrides Here (Used for projects not exporting stats through tables.xml) --
--- SETI doesn't export stats in the files we collect but they are a big project with consistant work over many years --
-IF (project = 'seti')
-    THEN SET
-        listing = 'Whitelisted',
-        suitability = 'Suitable for Rewards';
-END IF;
-
 -- Primegrid Requested removal --
 IF (project = 'primegrid')
     THEN SET
@@ -102,6 +103,20 @@ IF (project = 'einstein')
     THEN SET
         listing = 'Whitelisted',
         suitability = 'Suitable for Rewards';
+END IF;
+
+-- iThena is NCI so not suitable --
+IF (project = 'ithena')
+    THEN SET
+        listing = 'Unlisted',
+        suitability = 'Unsuitable for Rewards';
+END IF;
+
+-- WUProp is NCI so not suitable --
+IF (project = 'wuprop')
+    THEN SET
+        listing = 'Unlisted',
+        suitability = 'Unsuitable for Rewards';
 END IF;
 
 -- Update main Project Summary --
@@ -117,3 +132,4 @@ DELIMITER ;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

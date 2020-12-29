@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.5.8-MariaDB-3 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.3.0.5771
+-- HeidiSQL Version:             11.1.0.6116
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,6 +10,7 @@
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Dumping structure for procedure grc_listings.Update_Maths
 DELIMITER //
@@ -28,14 +29,10 @@ DECLARE fourtyday DATE;
 -- Average Daily Credit over period --
 DECLARE sevenavg BIGINT;
 DECLARE fourtyavg BIGINT;
-DECLARE compute INT;
-DECLARE users INT;
-DECLARE workunits INT;
 
 -- Calculated Values --
 DECLARE was DECIMAL(3,2);
 DECLARE zcd BIGINT;
-DECLARE cas INT;
 
 -- Set Dates relative to the current date --
 SET today = DATE_SUB(CURDATE(), INTERVAL 1 DAY);
@@ -64,29 +61,10 @@ SET zcd = (SELECT COUNT(`Project Daily Credit`)
 	FROM grc_listings.`Projects_Data`
 	WHERE (`Date`>= twentyday) AND (`Date`<= today) AND (`Project ID`= project) AND (`Project Daily Credit`= '0'));
 	
--- Calculate Compute Availability --
-SET compute = (SELECT `Project Compute Speed (GFlops)`
-    FROM grc_listings.`Projects_Main`
-    WHERE `Project ID`= project);
-    
-SET users = (SELECT `Active Users`
-    FROM grc_listings.`Projects_Main`
-    WHERE `Project ID`= project);
-    
-SET workunits = (SELECT `Workunit Queue`
-    FROM grc_listings.`Projects_Main`
-    WHERE `Project ID`= project);
-
-IF users = '0'
-    THEN SET cas = '0';
-    ELSE SET cas = (compute / users) + (workunits / '100');
-END IF;
-
 -- Update main Project Summary --
 UPDATE 	grc_listings.`Projects_Main`
 	SET 	`Project Avg Daily Credit (7 Day)`= sevenavg,
 			`Project Avg Daily Credit (40 Day)`= fourtyavg,
-			`Compute Availability`= cas,
 			`W.A.S (Work Availability Score)`= was,
 			`Z.C.D (Zero Credit Days)`= zcd
 	WHERE `Project ID`= project;
@@ -97,3 +75,4 @@ DELIMITER ;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

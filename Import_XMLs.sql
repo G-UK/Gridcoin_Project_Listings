@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.0.105
--- Server version:               10.3.22-MariaDB-1 - Debian buildd-unstable
+-- Server version:               10.5.8-MariaDB-3 - Debian buildd-unstable
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Version:             10.3.0.5771
+-- HeidiSQL Version:             11.1.0.6116
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -10,6 +10,7 @@
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Dumping structure for procedure grc_listings.Import_XMLs
 DELIMITER //
@@ -94,34 +95,32 @@ IF credit = '' THEN
    SET credit = oldcredit;
 END IF;
 
-
 #Grab time data from credit XML file
-IF project <> 'wcg' THEN
-   SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-   IF extractValue(creditxml, unixtimexpath) <> '' THEN
-      SET unixtime = extractValue(creditxml, unixtimexpath);
-   END IF;
+SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+IF extractValue(creditxml, unixtimexpath) <> '' THEN
+   SET unixtime = extractValue(creditxml, unixtimexpath);
 END IF;
 
 #Grab compute data from XML file, if it fails set compute to 0
-IF project <> 'gpugrid' AND project <> 'primegrid' AND project <> 'primaboinca' THEN
-   SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-   SET computexml = load_file(computepath);
-   SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-   SET usersxpath = (SELECT `Users XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-   SET workunitxpath = (SELECT `Workunit XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-      IF (extractValue(computexml, computexpath) IS NULL) OR (extractValue(computexml, computexpath) = '')
-		   THEN SET compute = oldcompute;
-		   ELSE SET compute = extractValue(computexml, computexpath);
-      END IF;
-      IF (extractValue(computexml, usersxpath) IS NULL) OR (extractValue(computexml, usersxpath) = '')
-		   THEN SET users = oldusers;
-		   ELSE SET users = extractValue(computexml, usersxpath);
-      END IF;
-      IF (extractValue(computexml, workunitxpath) IS NULL) OR (extractValue(computexml, workunitxpath) = '')
-		   THEN SET workunits = oldworkunits;
-		   ELSE SET workunits = extractValue(computexml, workunitxpath);
-      END IF;
+SET computepath = (SELECT `Compute Path` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET computexml = load_file(computepath);
+SET computexpath = (SELECT `Compute XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET usersxpath = (SELECT `Users XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+SET workunitxpath = (SELECT `Workunit XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
+
+IF (extractValue(computexml, computexpath) IS NULL) OR (extractValue(computexml, computexpath) = '')
+   THEN SET compute = oldcompute;
+ 	ELSE SET compute = extractValue(computexml, computexpath);
+END IF;
+
+IF (extractValue(computexml, usersxpath) IS NULL) OR (extractValue(computexml, usersxpath) = '')
+   THEN SET users = oldusers;
+   ELSE SET users = extractValue(computexml, usersxpath);
+END IF;
+
+IF (extractValue(computexml, workunitxpath) IS NULL) OR (extractValue(computexml, workunitxpath) = '')
+   THEN SET workunits = oldworkunits;
+   ELSE SET workunits = extractValue(computexml, workunitxpath);
 END IF;
 
 -- ----------------------- --
@@ -183,24 +182,18 @@ IF project = 'primegrid' THEN
 	SET workunits = CONVERT(wu_string, SIGNED);
 END IF;
 
-#World Community Grid is non-standard (Convert "WCG Points" to "BOINC Credits" & Calculate compute based on standard BOINC credit)
+#Compute speed estimates where compute speed is not provided by the project (Calculate compute based on standard BOINC credit)
 IF project = 'wcg' THEN
-   SET credit = credit/7;
-   	IF (credit - oldcredit) = '0' THEN
-			SET compute = (oldcredit - oldcredit2)/200;
-		ELSE
-			SET compute = (credit - oldcredit)/200;
-		END IF;
-   SET unixtimexpath = (SELECT `Unix Time XPath` FROM grc_listings.`File_Location` WHERE (`Project ID` = project));
-   SET wcgtime = extractValue(creditxml, unixtimexpath);
-   SET unixtime = UNIX_TIMESTAMP(wcgtime);
-   SET users = '40000';
-   SET oldusers = '40000';
-   SET workunits = '0';
+   IF (credit - oldcredit) = '0' THEN
+   	SET compute = (oldcredit - oldcredit2)/200;
+	ELSE
+		SET compute = (credit - oldcredit)/200;
+	END IF;
+   SET users = '39000';
+   SET oldusers = '39000';
+   SET workunits = '1000';
 END IF;
 
-#Compute speed estimates where compute speed is not provided by the project (Calculate compute based on standard BOINC credit)
-#Yoyo
 IF project = 'yoyo' THEN
 	IF (credit - oldcredit) = '0' THEN
 		SET compute = (oldcredit - oldcredit2)/200;
@@ -209,27 +202,6 @@ IF project = 'yoyo' THEN
 	END IF;
 	SET users = '2500';
 	SET oldusers = '2500';
-END IF;
-
-#Primaboinca doesn't provide any data so estimate compute, users and workunits
-IF project = 'primaboinca' THEN
-	IF (credit - oldcredit) = '0' THEN
-		SET compute = (oldcredit - oldcredit2)/200;
-	ELSE
-		SET compute = (credit - oldcredit)/200;
-	END IF;
-   SET users = '275';
-   SET oldusers = '275';
-   SET workunits = '0';
-END IF;
-
-#Prevent Divide by 0 Error and guesstimate active users if data is not available
-IF users = '0'
-    THEN SET users = '10000';
-END IF;
-
-IF oldusers = '0'
-    THEN SET oldusers = '10000';
 END IF;
 
 -- --------------------------- --
@@ -304,3 +276,4 @@ DELIMITER ;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
